@@ -1,14 +1,38 @@
 import { useState } from "react";
-import { Plus, MessageSquare, Search, Menu, Bot, Megaphone, Sparkles } from "lucide-react";
+import { Plus, MessageSquare, Search, Menu, Bot, Megaphone, Sparkles, Users, LucideIcon } from "lucide-react";
 import { tools, Tool } from "@/data/tools";
 import ChatMessages from "./ChatMessages";
 
+interface DisplayInfo {
+  color: string;
+  icon: LucideIcon;
+  name: string;
+  shortName: string;
+  description: string;
+}
+
+// Map each tool to a custom display (color + icon)
+const toolDisplayMap: Record<string, { color: string; icon: LucideIcon }> = {
+  assistant: { color: "#FFBF0A", icon: Sparkles },
+  campaign: { color: "#9900FF", icon: Megaphone },
+  rh: { color: "hsl(142, 71%, 45%)", icon: Users },
+};
+
+const getDisplayInfo = (tool: Tool): DisplayInfo => {
+  const custom = toolDisplayMap[tool.id];
+  return {
+    color: custom?.color || tool.color,
+    icon: custom?.icon || tool.icon,
+    name: tool.name,
+    shortName: tool.shortName,
+    description: tool.description,
+  };
+};
+
 const Proposition1 = () => {
   const [activeTool, setActiveTool] = useState<Tool | null>(null);
-  const [conversationStarted, setConversationStarted] = useState(true); // existing conv by default
+  const [conversationStarted, setConversationStarted] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(true);
-
-  // Simulated "new conversation" state
   const [showWelcome, setShowWelcome] = useState(false);
 
   const conversations = [
@@ -20,8 +44,8 @@ const Proposition1 = () => {
 
   const [activeConvIndex, setActiveConvIndex] = useState(0);
 
-  // The currently displayed tool (from conversation or selection)
-  const displayTool = activeTool || (activeConvIndex >= 0 ? conversations[activeConvIndex].tool : tools[0]);
+  const currentTool = activeTool || (activeConvIndex >= 0 ? conversations[activeConvIndex].tool : tools[0]);
+  const display = getDisplayInfo(currentTool);
 
   const handleNewConversation = () => {
     setShowWelcome(true);
@@ -43,17 +67,16 @@ const Proposition1 = () => {
     setConversationStarted(true);
   };
 
-  // Actions shown on the welcome screen
   const actions = [
     {
-      tool: tools[0], // Assistant IA
+      tool: tools[0],
       label: "Lancer une conversation classique",
       description: "Posez vos questions génériques à l'IA",
       icon: Sparkles,
       color: "#FFBF0A",
     },
     {
-      tool: tools[2], // Campagne
+      tool: tools[2],
       label: "Utiliser l'assistant META",
       description: "Créez des campagnes Facebook via MCP",
       icon: Megaphone,
@@ -66,7 +89,6 @@ const Proposition1 = () => {
       {/* Sidebar */}
       {sidebarOpen && (
         <div className="w-64 flex flex-col shrink-0" style={{ background: "hsl(220, 18%, 9%)" }}>
-          {/* New chat */}
           <div className="p-3 border-b" style={{ borderColor: "hsl(220, 14%, 16%)" }}>
             <button
               onClick={handleNewConversation}
@@ -78,7 +100,6 @@ const Proposition1 = () => {
             </button>
           </div>
 
-          {/* Search */}
           <div className="px-3 py-2">
             <div className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm" style={{ background: "hsl(220, 16%, 14%)" }}>
               <Search className="w-3.5 h-3.5" style={{ color: "hsl(220, 10%, 45%)" }} />
@@ -86,53 +107,53 @@ const Proposition1 = () => {
             </div>
           </div>
 
-          {/* History */}
           <div className="flex-1 overflow-y-auto px-2 py-1">
             <div className="px-2 py-2 text-xs font-medium uppercase tracking-wider" style={{ color: "hsl(220, 10%, 40%)" }}>
               Aujourd'hui
             </div>
-            {conversations.map((conv, i) => (
-              <div
-                key={i}
-                onClick={() => handleSelectConversation(i)}
-                className="flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer text-sm transition-colors mb-0.5"
-                style={{
-                  color: "hsl(220, 14%, 75%)",
-                  background: i === activeConvIndex ? "hsl(220, 16%, 14%)" : "transparent",
-                }}
-              >
+            {conversations.map((conv, i) => {
+              const convDisplay = getDisplayInfo(conv.tool);
+              const ConvIcon = convDisplay.icon;
+              return (
                 <div
-                  className="w-4 h-4 rounded flex items-center justify-center shrink-0"
-                  style={{ backgroundColor: conv.tool.color }}
+                  key={i}
+                  onClick={() => handleSelectConversation(i)}
+                  className="flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer text-sm transition-colors mb-0.5"
+                  style={{
+                    color: "hsl(220, 14%, 75%)",
+                    background: i === activeConvIndex ? "hsl(220, 16%, 14%)" : "transparent",
+                  }}
                 >
-                  <conv.tool.icon className="w-2.5 h-2.5 text-white" />
+                  <div
+                    className="w-4 h-4 rounded flex items-center justify-center shrink-0"
+                    style={{ backgroundColor: convDisplay.color }}
+                  >
+                    <ConvIcon className="w-2.5 h-2.5 text-white" />
+                  </div>
+                  <span className="truncate">{conv.label}</span>
                 </div>
-                <span className="truncate">{conv.label}</span>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       )}
 
       {/* Main area */}
       <div className="flex-1 flex flex-col" style={{ background: "hsl(220, 16%, 12%)" }}>
-        {/* Top bar */}
         <div className="h-12 flex items-center px-4 border-b shrink-0" style={{ borderColor: "hsl(220, 14%, 18%)" }}>
           <button onClick={() => setSidebarOpen(!sidebarOpen)} className="p-1.5 rounded-md transition-colors" style={{ color: "hsl(220, 10%, 55%)" }}>
             <Menu className="w-5 h-5" />
           </button>
           {conversationStarted && (
             <span className="ml-3 text-sm font-medium" style={{ color: "hsl(220, 14%, 90%)" }}>
-              {displayTool.name}
+              {display.name}
             </span>
           )}
         </div>
 
-        {/* Welcome screen OR chat */}
         {showWelcome ? (
           <div className="flex-1 flex items-center justify-center">
-          <div className="text-center max-w-lg px-4">
-              {/* Icon */}
+            <div className="text-center max-w-lg px-4">
               <div className="flex justify-center mb-5">
                 <div
                   className="w-12 h-12 rounded-xl flex items-center justify-center"
@@ -182,7 +203,12 @@ const Proposition1 = () => {
           </div>
         ) : (
           <>
-            <ChatMessages activeTool={displayTool} />
+            <ChatMessages
+              toolName={display.name}
+              toolDescription={display.description}
+              displayColor={display.color}
+              DisplayIcon={display.icon}
+            />
 
             {/* Input area with non-clickable chip */}
             <div className="p-4 shrink-0">
@@ -191,22 +217,21 @@ const Proposition1 = () => {
                   className="flex items-center gap-2 rounded-xl px-3 py-2.5"
                   style={{ background: "hsl(220, 16%, 16%)", border: "1px solid hsl(220, 14%, 22%)" }}
                 >
-                  {/* Non-clickable tool chip */}
                   <div
                     className="flex items-center gap-1.5 rounded-full pl-1.5 pr-2.5 py-1 text-xs font-medium shrink-0"
                     style={{
-                      background: `${displayTool.color}20`,
-                      color: displayTool.color,
-                      border: `1px solid ${displayTool.color}40`,
+                      background: `${display.color}20`,
+                      color: display.color,
+                      border: `1px solid ${display.color}40`,
                     }}
                   >
                     <div
                       className="w-5 h-5 rounded-full flex items-center justify-center"
-                      style={{ backgroundColor: displayTool.color }}
+                      style={{ backgroundColor: display.color }}
                     >
-                      <displayTool.icon className="w-3 h-3 text-white" />
+                      <display.icon className="w-3 h-3 text-white" />
                     </div>
-                    {displayTool.shortName}
+                    {display.shortName}
                   </div>
 
                   <input
@@ -217,7 +242,7 @@ const Proposition1 = () => {
                   />
                   <button
                     className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
-                    style={{ background: displayTool.color }}
+                    style={{ background: display.color }}
                   >
                     <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M12 5l7 7-7 7" />

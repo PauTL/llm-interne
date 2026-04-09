@@ -1,22 +1,25 @@
-import { Tool } from "@/data/tools";
+import { LucideIcon } from "lucide-react";
 
 interface ChatMessagesProps {
-  activeTool: Tool;
+  toolName: string;
+  toolDescription: string;
+  displayColor: string;
+  DisplayIcon: LucideIcon;
 }
 
-const ChatMessages = ({ activeTool }: ChatMessagesProps) => {
+const ChatMessages = ({ toolName, toolDescription, displayColor, DisplayIcon }: ChatMessagesProps) => {
   return (
     <div className="flex-1 overflow-y-auto p-6 space-y-4">
       {/* AI greeting */}
       <div className="flex gap-3 max-w-2xl">
         <div
           className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 mt-0.5"
-          style={{ backgroundColor: activeTool.color }}
+          style={{ backgroundColor: displayColor }}
         >
-          <activeTool.icon className="w-4 h-4 text-white" />
+          <DisplayIcon className="w-4 h-4 text-white" />
         </div>
         <div className="rounded-2xl rounded-tl-md px-4 py-3 text-sm" style={{ background: "hsl(220, 16%, 18%)", color: "hsl(220, 14%, 90%)" }}>
-          Bonjour ! Je suis <strong>{activeTool.name}</strong>. {activeTool.description}. Comment puis-je vous aider ?
+          Bonjour ! Je suis <strong>{toolName}</strong>. {toolDescription}. Comment puis-je vous aider ?
         </div>
       </div>
 
@@ -31,9 +34,9 @@ const ChatMessages = ({ activeTool }: ChatMessagesProps) => {
       <div className="flex gap-3 max-w-2xl">
         <div
           className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 mt-0.5"
-          style={{ backgroundColor: activeTool.color }}
+          style={{ backgroundColor: displayColor }}
         >
-          <activeTool.icon className="w-4 h-4 text-white" />
+          <DisplayIcon className="w-4 h-4 text-white" />
         </div>
         <div className="rounded-2xl rounded-tl-md px-4 py-3 text-sm" style={{ background: "hsl(220, 16%, 18%)", color: "hsl(220, 14%, 90%)" }}>
           Bien sûr, je suis là pour vous aider. N'hésitez pas à me poser votre question !

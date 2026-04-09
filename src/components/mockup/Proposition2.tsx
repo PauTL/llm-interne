@@ -84,7 +84,7 @@ const Proposition2 = () => {
           </span>
         </div>
 
-        <ChatMessages activeTool={activeTool} />
+        <ChatMessages toolName={activeTool.name} toolDescription={activeTool.description} displayColor={activeTool.color} DisplayIcon={activeTool.icon} />
 
         {/* Input area with chip */}
         <div className="p-4 shrink-0">
