@@ -21,7 +21,7 @@ const Proposition1 = () => {
   const [activeConvIndex, setActiveConvIndex] = useState(0);
 
   // The currently displayed tool (from conversation or selection)
-  const displayTool = activeTool || conversations[activeConvIndex].tool;
+  const displayTool = activeTool || (activeConvIndex >= 0 ? conversations[activeConvIndex].tool : tools[0]);
 
   const handleNewConversation = () => {
     setShowWelcome(true);
