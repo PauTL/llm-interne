@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus, MessageSquare, Search, Menu, Bot, Megaphone } from "lucide-react";
+import { Plus, MessageSquare, Search, Menu, Bot, Megaphone, Sparkles } from "lucide-react";
 import { tools, Tool } from "@/data/tools";
 import ChatMessages from "./ChatMessages";
 
@@ -49,11 +49,15 @@ const Proposition1 = () => {
       tool: tools[0], // Assistant IA
       label: "Lancer une conversation classique",
       description: "Posez vos questions génériques à l'IA",
+      icon: Sparkles,
+      color: "#FFBF0A",
     },
     {
       tool: tools[2], // Campagne
       label: "Utiliser l'assistant META",
       description: "Créez des campagnes Facebook via MCP",
+      icon: Megaphone,
+      color: "#9900FF",
     },
   ];
 
@@ -132,7 +136,7 @@ const Proposition1 = () => {
               <div className="flex justify-center mb-5">
                 <div
                   className="w-12 h-12 rounded-xl flex items-center justify-center"
-                  style={{ backgroundColor: "hsl(217, 91%, 55%)" }}
+                  style={{ backgroundColor: "#3232FF" }}
                 >
                   <Bot className="w-6 h-6 text-white" />
                 </div>
