@@ -127,19 +127,28 @@ const Proposition1 = () => {
         {/* Welcome screen OR chat */}
         {showWelcome ? (
           <div className="flex-1 flex items-center justify-center">
-            <div className="text-center max-w-md px-4">
+          <div className="text-center max-w-lg px-4">
+              {/* Icon */}
+              <div className="flex justify-center mb-5">
+                <div
+                  className="w-12 h-12 rounded-xl flex items-center justify-center"
+                  style={{ backgroundColor: "hsl(217, 91%, 55%)" }}
+                >
+                  <Bot className="w-6 h-6 text-white" />
+                </div>
+              </div>
               <h2 className="text-2xl font-semibold mb-2" style={{ color: "hsl(220, 14%, 92%)" }}>
                 Comment puis-je vous aider aujourd'hui ?
               </h2>
               <p className="text-sm mb-8" style={{ color: "hsl(220, 10%, 50%)" }}>
                 Sélectionnez une action ci-dessous
               </p>
-              <div className="flex flex-col gap-3">
+              <div className="flex gap-3 justify-center">
                 {actions.map((action, i) => (
                   <button
                     key={i}
                     onClick={() => handleSelectTool(action.tool)}
-                    className="flex items-center gap-4 rounded-xl px-5 py-4 text-left transition-all"
+                    className="flex items-center gap-3 rounded-xl px-5 py-4 text-left transition-all w-64"
                     style={{
                       background: "hsl(220, 16%, 15%)",
                       border: "1px solid hsl(220, 14%, 22%)",
@@ -154,18 +163,13 @@ const Proposition1 = () => {
                     }}
                   >
                     <div
-                      className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
+                      className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
                       style={{ backgroundColor: action.tool.color }}
                     >
-                      <action.tool.icon className="w-5 h-5 text-white" />
+                      <action.tool.icon className="w-4.5 h-4.5 text-white" />
                     </div>
-                    <div>
-                      <div className="text-sm font-medium" style={{ color: "hsl(220, 14%, 92%)" }}>
-                        {action.label}
-                      </div>
-                      <div className="text-xs mt-0.5" style={{ color: "hsl(220, 10%, 50%)" }}>
-                        {action.description}
-                      </div>
+                    <div className="text-sm font-medium" style={{ color: "hsl(220, 14%, 92%)" }}>
+                      {action.label}
                     </div>
                   </button>
                 ))}
