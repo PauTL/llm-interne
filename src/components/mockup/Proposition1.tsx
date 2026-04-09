@@ -159,7 +159,7 @@ const Proposition1 = () => {
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.background = "hsl(220, 16%, 18%)";
-                      e.currentTarget.style.borderColor = action.tool.color;
+                      e.currentTarget.style.borderColor = action.color;
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.background = "hsl(220, 16%, 15%)";
@@ -168,9 +168,9 @@ const Proposition1 = () => {
                   >
                     <div
                       className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
-                      style={{ backgroundColor: action.tool.color }}
+                      style={{ backgroundColor: action.color }}
                     >
-                      <action.tool.icon className="w-4.5 h-4.5 text-white" />
+                      <action.icon className="w-4.5 h-4.5 text-white" />
                     </div>
                     <div className="text-sm font-medium" style={{ color: "hsl(220, 14%, 92%)" }}>
                       {action.label}
