@@ -1,17 +1,11 @@
 import { useState } from "react";
-import { Plus, MessageSquare, Search, Menu, Bot, Megaphone, Sparkles, Users, LucideIcon } from "lucide-react";
+import { Menu, Bot, Megaphone, Sparkles, Users, FolderKanban, LucideIcon } from "lucide-react";
 import { tools, Tool } from "@/data/tools";
 import ChatMessages from "./ChatMessages";
+import Sidebar from "./Sidebar";
+import ProjectDialog from "./ProjectDialog";
+import { Conversation, DisplayInfo, Project } from "./types";
 
-interface DisplayInfo {
-  color: string;
-  icon: LucideIcon;
-  name: string;
-  shortName: string;
-  description: string;
-}
-
-// Map each tool to a custom display (color + icon)
 const toolDisplayMap: Record<string, { color: string; icon: LucideIcon }> = {
   assistant: { color: "#FFBF0A", icon: Sparkles },
   campaign: { color: "#9900FF", icon: Megaphone },
@@ -29,56 +23,124 @@ const getDisplayInfo = (tool: Tool): DisplayInfo => {
   };
 };
 
+const initialProjects: Project[] = [
+  {
+    id: "p1",
+    title: "Campagne été 2026",
+    instruction: "Tu es un expert marketing META. Toutes les réponses doivent cibler une audience 25-35 ans, ton décontracté, focus performance.",
+  },
+  {
+    id: "p2",
+    title: "Onboarding RH",
+    instruction: "Tu réponds toujours en te basant sur le manuel RH interne. Cite les sections du manuel quand c'est pertinent.",
+  },
+];
+
+const initialConversations: Conversation[] = [
+  { id: "c1", label: "Comment poser des congés ?", tool: tools[0], projectId: "p2" },
+  { id: "c2", label: "Résumé réunion Q1", tool: tools[0] },
+  { id: "c3", label: "Créer campagne été 2026", tool: tools[2], projectId: "p1" },
+  { id: "c4", label: "Question sur le télétravail", tool: tools[1] },
+];
+
 const Proposition1 = () => {
+  const [projects, setProjects] = useState<Project[]>(initialProjects);
+  const [conversations, setConversations] = useState<Conversation[]>(initialConversations);
+  const [expandedProjectIds, setExpandedProjectIds] = useState<Set<string>>(new Set(["p1"]));
+  const [activeConversationId, setActiveConversationId] = useState<string | null>("c1");
   const [activeTool, setActiveTool] = useState<Tool | null>(null);
-  const [conversationStarted, setConversationStarted] = useState(true);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [pendingProjectId, setPendingProjectId] = useState<string | null>(null);
   const [showWelcome, setShowWelcome] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
-  const conversations = [
-    { label: "Comment poser des congés ?", tool: tools[0] },
-    { label: "Résumé réunion Q1", tool: tools[0] },
-    { label: "Créer campagne été 2026", tool: tools[2] },
-    { label: "Question sur le télétravail", tool: tools[1] },
-  ];
+  const [projectDialogOpen, setProjectDialogOpen] = useState(false);
+  const [editingProject, setEditingProject] = useState<Project | null>(null);
 
-  const [activeConvIndex, setActiveConvIndex] = useState(0);
-
-  const currentTool = activeTool || (activeConvIndex >= 0 ? conversations[activeConvIndex].tool : tools[0]);
+  const activeConversation = conversations.find((c) => c.id === activeConversationId) ?? null;
+  const currentTool = activeTool || activeConversation?.tool || tools[0];
   const display = getDisplayInfo(currentTool);
+  const activeProject =
+    projects.find((p) => p.id === (pendingProjectId ?? activeConversation?.projectId)) ?? null;
+
+  const conversationStarted = !showWelcome && !!activeConversation;
 
   const handleNewConversation = () => {
     setShowWelcome(true);
-    setConversationStarted(false);
     setActiveTool(null);
-    setActiveConvIndex(-1);
+    setActiveConversationId(null);
+    setPendingProjectId(null);
+  };
+
+  const handleToggleProject = (id: string) => {
+    setExpandedProjectIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const handleSelectConversation = (id: string) => {
+    setActiveConversationId(id);
+    setActiveTool(null);
+    setShowWelcome(false);
+    setPendingProjectId(null);
   };
 
   const handleSelectTool = (tool: Tool) => {
+    const newConv: Conversation = {
+      id: `c${Date.now()}`,
+      label: "Nouvelle conversation",
+      tool,
+      projectId: pendingProjectId ?? undefined,
+    };
+    setConversations((prev) => [newConv, ...prev]);
+    setActiveConversationId(newConv.id);
     setActiveTool(tool);
     setShowWelcome(false);
-    setConversationStarted(true);
+    if (pendingProjectId) {
+      setExpandedProjectIds((prev) => new Set(prev).add(pendingProjectId));
+    }
+    setPendingProjectId(null);
   };
 
-  const handleSelectConversation = (index: number) => {
-    setActiveConvIndex(index);
-    setActiveTool(conversations[index].tool);
-    setShowWelcome(false);
-    setConversationStarted(true);
+  const handleNewProject = () => {
+    setEditingProject(null);
+    setProjectDialogOpen(true);
+  };
+
+  const handleEditProject = (project: Project) => {
+    setEditingProject(project);
+    setProjectDialogOpen(true);
+  };
+
+  const handleSubmitProject = (data: { title: string; instruction: string }) => {
+    if (editingProject) {
+      setProjects((prev) =>
+        prev.map((p) => (p.id === editingProject.id ? { ...p, ...data } : p)),
+      );
+    } else {
+      const newProject: Project = { id: `p${Date.now()}`, ...data };
+      setProjects((prev) => [...prev, newProject]);
+      setExpandedProjectIds((prev) => new Set(prev).add(newProject.id));
+      // Immediately propose creating a conversation in this project
+      setPendingProjectId(newProject.id);
+      setActiveConversationId(null);
+      setActiveTool(null);
+      setShowWelcome(true);
+    }
   };
 
   const actions = [
     {
       tool: tools[0],
       label: "Lancer une conversation classique",
-      description: "Posez vos questions génériques à l'IA",
       icon: Sparkles,
       color: "#FFBF0A",
     },
     {
       tool: tools[2],
       label: "Utiliser l'assistant META",
-      description: "Créez des campagnes Facebook via MCP",
       icon: Megaphone,
       color: "#9900FF",
     },
@@ -86,66 +148,36 @@ const Proposition1 = () => {
 
   return (
     <div className="flex h-full rounded-xl overflow-hidden border" style={{ borderColor: "hsl(220, 14%, 20%)" }}>
-      {/* Sidebar */}
       {sidebarOpen && (
-        <div className="w-64 flex flex-col shrink-0" style={{ background: "hsl(220, 18%, 9%)" }}>
-          <div className="p-3 border-b" style={{ borderColor: "hsl(220, 14%, 16%)" }}>
-            <button
-              onClick={handleNewConversation}
-              className="w-full flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm transition-colors"
-              style={{ background: "hsl(220, 16%, 14%)", color: "hsl(220, 14%, 90%)" }}
-            >
-              <Plus className="w-4 h-4" />
-              Nouvelle conversation
-            </button>
-          </div>
-
-          <div className="px-3 py-2">
-            <div className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm" style={{ background: "hsl(220, 16%, 14%)" }}>
-              <Search className="w-3.5 h-3.5" style={{ color: "hsl(220, 10%, 45%)" }} />
-              <span style={{ color: "hsl(220, 10%, 45%)" }}>Rechercher…</span>
-            </div>
-          </div>
-
-          <div className="flex-1 overflow-y-auto px-2 py-1">
-            <div className="px-2 py-2 text-xs font-medium uppercase tracking-wider" style={{ color: "hsl(220, 10%, 40%)" }}>
-              Aujourd'hui
-            </div>
-            {conversations.map((conv, i) => {
-              const convDisplay = getDisplayInfo(conv.tool);
-              const ConvIcon = convDisplay.icon;
-              return (
-                <div
-                  key={i}
-                  onClick={() => handleSelectConversation(i)}
-                  className="flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer text-sm transition-colors mb-0.5"
-                  style={{
-                    color: "hsl(220, 14%, 75%)",
-                    background: i === activeConvIndex ? "hsl(220, 16%, 14%)" : "transparent",
-                  }}
-                >
-                  <div
-                    className="w-4 h-4 rounded flex items-center justify-center shrink-0"
-                    style={{ backgroundColor: convDisplay.color }}
-                  >
-                    <ConvIcon className="w-2.5 h-2.5 text-white" />
-                  </div>
-                  <span className="truncate">{conv.label}</span>
-                </div>
-              );
-            })}
-          </div>
-        </div>
+        <Sidebar
+          projects={projects}
+          conversations={conversations}
+          expandedProjectIds={expandedProjectIds}
+          activeConversationId={activeConversationId}
+          onToggleProject={handleToggleProject}
+          onNewConversation={handleNewConversation}
+          onNewProject={handleNewProject}
+          onEditProject={handleEditProject}
+          onSelectConversation={handleSelectConversation}
+        />
       )}
 
-      {/* Main area */}
       <div className="flex-1 flex flex-col" style={{ background: "hsl(220, 16%, 12%)" }}>
-        <div className="h-12 flex items-center px-4 border-b shrink-0" style={{ borderColor: "hsl(220, 14%, 18%)" }}>
+        <div className="h-12 flex items-center px-4 border-b shrink-0 gap-3" style={{ borderColor: "hsl(220, 14%, 18%)" }}>
           <button onClick={() => setSidebarOpen(!sidebarOpen)} className="p-1.5 rounded-md transition-colors" style={{ color: "hsl(220, 10%, 55%)" }}>
             <Menu className="w-5 h-5" />
           </button>
+          {activeProject && (
+            <div
+              className="flex items-center gap-1.5 text-xs px-2 py-1 rounded-md"
+              style={{ background: "hsl(220, 16%, 16%)", color: "hsl(220, 14%, 80%)" }}
+            >
+              <FolderKanban className="w-3.5 h-3.5" style={{ color: "hsl(220, 10%, 60%)" }} />
+              {activeProject.title}
+            </div>
+          )}
           {conversationStarted && (
-            <span className="ml-3 text-sm font-medium" style={{ color: "hsl(220, 14%, 90%)" }}>
+            <span className="text-sm font-medium" style={{ color: "hsl(220, 14%, 90%)" }}>
               {display.name}
             </span>
           )}
@@ -155,29 +187,29 @@ const Proposition1 = () => {
           <div className="flex-1 flex items-center justify-center">
             <div className="text-center max-w-lg px-4">
               <div className="flex justify-center mb-5">
-                <div
-                  className="w-12 h-12 rounded-xl flex items-center justify-center"
-                  style={{ backgroundColor: "#3232FF" }}
-                >
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: "#3232FF" }}>
                   <Bot className="w-6 h-6 text-white" />
                 </div>
               </div>
               <h2 className="text-2xl font-semibold mb-2" style={{ color: "hsl(220, 14%, 92%)" }}>
                 Comment puis-je vous aider aujourd'hui ?
               </h2>
-              <p className="text-sm mb-8" style={{ color: "hsl(220, 10%, 50%)" }}>
+              <p className="text-sm mb-3" style={{ color: "hsl(220, 10%, 50%)" }}>
                 Sélectionnez une action ci-dessous
               </p>
-              <div className="flex gap-3 justify-center">
+              {activeProject && (
+                <p className="text-xs mb-6" style={{ color: "hsl(220, 10%, 60%)" }}>
+                  Cette conversation héritera de l'instruction du projet{" "}
+                  <strong style={{ color: "hsl(220, 14%, 80%)" }}>{activeProject.title}</strong>
+                </p>
+              )}
+              <div className="flex gap-3 justify-center mt-6">
                 {actions.map((action, i) => (
                   <button
                     key={i}
                     onClick={() => handleSelectTool(action.tool)}
                     className="flex items-center gap-3 rounded-xl px-5 py-4 text-left transition-all w-64"
-                    style={{
-                      background: "hsl(220, 16%, 15%)",
-                      border: "1px solid hsl(220, 14%, 22%)",
-                    }}
+                    style={{ background: "hsl(220, 16%, 15%)", border: "1px solid hsl(220, 14%, 22%)" }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.background = "hsl(220, 16%, 18%)";
                       e.currentTarget.style.borderColor = action.color;
@@ -187,10 +219,7 @@ const Proposition1 = () => {
                       e.currentTarget.style.borderColor = "hsl(220, 14%, 22%)";
                     }}
                   >
-                    <div
-                      className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
-                      style={{ backgroundColor: action.color }}
-                    >
+                    <div className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0" style={{ backgroundColor: action.color }}>
                       <action.icon className="w-4.5 h-4.5 text-white" />
                     </div>
                     <div className="text-sm font-medium" style={{ color: "hsl(220, 14%, 92%)" }}>
@@ -203,6 +232,21 @@ const Proposition1 = () => {
           </div>
         ) : (
           <>
+            {activeProject && (
+              <div
+                className="mx-4 mt-3 rounded-lg px-3 py-2 text-xs flex items-start gap-2"
+                style={{ background: "hsl(220, 16%, 15%)", border: "1px solid hsl(220, 14%, 20%)" }}
+              >
+                <FolderKanban className="w-3.5 h-3.5 mt-0.5 shrink-0" style={{ color: "hsl(220, 10%, 55%)" }} />
+                <div style={{ color: "hsl(220, 10%, 65%)" }}>
+                  <span className="font-medium" style={{ color: "hsl(220, 14%, 80%)" }}>
+                    Instruction du projet :
+                  </span>{" "}
+                  {activeProject.instruction || <em>Aucune instruction définie</em>}
+                </div>
+              </div>
+            )}
+
             <ChatMessages
               toolName={display.name}
               toolDescription={display.description}
@@ -210,40 +254,21 @@ const Proposition1 = () => {
               DisplayIcon={display.icon}
             />
 
-            {/* Input area with non-clickable chip */}
             <div className="p-4 shrink-0">
               <div className="max-w-2xl mx-auto">
-                <div
-                  className="flex items-center gap-2 rounded-xl px-3 py-2.5"
-                  style={{ background: "hsl(220, 16%, 16%)", border: "1px solid hsl(220, 14%, 22%)" }}
-                >
+                <div className="flex items-center gap-2 rounded-xl px-3 py-2.5" style={{ background: "hsl(220, 16%, 16%)", border: "1px solid hsl(220, 14%, 22%)" }}>
                   <div
                     className="flex items-center gap-1.5 rounded-full pl-1.5 pr-2.5 py-1 text-xs font-medium shrink-0"
-                    style={{
-                      background: `${display.color}20`,
-                      color: display.color,
-                      border: `1px solid ${display.color}40`,
-                    }}
+                    style={{ background: `${display.color}20`, color: display.color, border: `1px solid ${display.color}40` }}
                   >
-                    <div
-                      className="w-5 h-5 rounded-full flex items-center justify-center"
-                      style={{ backgroundColor: display.color }}
-                    >
+                    <div className="w-5 h-5 rounded-full flex items-center justify-center" style={{ backgroundColor: display.color }}>
                       <display.icon className="w-3 h-3 text-white" />
                     </div>
                     {display.shortName}
                   </div>
 
-                  <input
-                    type="text"
-                    placeholder="Posez votre question…"
-                    className="flex-1 bg-transparent outline-none text-sm"
-                    style={{ color: "hsl(220, 14%, 90%)" }}
-                  />
-                  <button
-                    className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
-                    style={{ background: display.color }}
-                  >
+                  <input type="text" placeholder="Posez votre question…" className="flex-1 bg-transparent outline-none text-sm" style={{ color: "hsl(220, 14%, 90%)" }} />
+                  <button className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ background: display.color }}>
                     <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M12 5l7 7-7 7" />
                     </svg>
@@ -254,6 +279,13 @@ const Proposition1 = () => {
           </>
         )}
       </div>
+
+      <ProjectDialog
+        open={projectDialogOpen}
+        onOpenChange={setProjectDialogOpen}
+        initial={editingProject}
+        onSubmit={handleSubmitProject}
+      />
     </div>
   );
 };
