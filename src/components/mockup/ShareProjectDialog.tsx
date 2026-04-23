@@ -22,12 +22,8 @@ const ShareProjectDialog = ({
 }: ShareProjectDialogProps) => {
   const [query, setQuery] = useState("");
 
-  if (!project) return null;
-
-  const owner = getUser(project.ownerId);
-  const members = project.memberIds.map(getUser).filter(Boolean);
-
   const candidates = useMemo(() => {
+    if (!project) return [];
     const q = query.trim().toLowerCase();
     return directory.filter((u) => {
       if (u.id === project.ownerId) return false;
@@ -37,7 +33,12 @@ const ShareProjectDialog = ({
         u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q)
       );
     });
-  }, [query, project.memberIds, project.ownerId]);
+  }, [query, project]);
+
+  if (!project) return null;
+
+  const owner = getUser(project.ownerId);
+  const members = project.memberIds.map(getUser).filter(Boolean);
 
   const addMember = (id: string) => {
     onUpdateMembers([...project.memberIds, id]);
