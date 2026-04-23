@@ -1,10 +1,13 @@
 import { useState } from "react";
-import { Menu, Bot, Megaphone, Sparkles, Users, FolderKanban, LucideIcon } from "lucide-react";
+import { Menu, Bot, Megaphone, Sparkles, Users, FolderKanban, Share2, Settings, Eye, LucideIcon } from "lucide-react";
 import { tools, Tool } from "@/data/tools";
 import ChatMessages from "./ChatMessages";
 import Sidebar from "./Sidebar";
 import ProjectDialog from "./ProjectDialog";
-import { Conversation, DisplayInfo, Project } from "./types";
+import ShareProjectDialog from "./ShareProjectDialog";
+import Avatar from "./Avatar";
+import { AppRole, Conversation, DisplayInfo, Project } from "./types";
+import { CURRENT_USER_ID, getUser } from "./users";
 
 const toolDisplayMap: Record<string, { color: string; icon: LucideIcon }> = {
   assistant: { color: "#FFBF0A", icon: Sparkles },
@@ -27,12 +30,18 @@ const initialProjects: Project[] = [
   {
     id: "p1",
     title: "Campagne été 2026",
-    instruction: "Tu es un expert marketing META. Toutes les réponses doivent cibler une audience 25-35 ans, ton décontracté, focus performance.",
+    instruction:
+      "Tu es un expert marketing META. Toutes les réponses doivent cibler une audience 25-35 ans, ton décontracté, focus performance.",
+    ownerId: CURRENT_USER_ID,
+    memberIds: ["u_alice", "u_bob"],
   },
   {
     id: "p2",
     title: "Onboarding RH",
-    instruction: "Tu réponds toujours en te basant sur le manuel RH interne. Cite les sections du manuel quand c'est pertinent.",
+    instruction:
+      "Tu réponds toujours en te basant sur le manuel RH interne. Cite les sections du manuel quand c'est pertinent.",
+    ownerId: "u_chloe",
+    memberIds: [CURRENT_USER_ID],
   },
 ];
 
@@ -52,15 +61,23 @@ const Proposition1 = () => {
   const [pendingProjectId, setPendingProjectId] = useState<string | null>(null);
   const [showWelcome, setShowWelcome] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [currentRole, setCurrentRole] = useState<AppRole>("editor");
 
   const [projectDialogOpen, setProjectDialogOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<Project | null>(null);
+  const [shareDialogOpen, setShareDialogOpen] = useState(false);
+  const [sharingProject, setSharingProject] = useState<Project | null>(null);
 
   const activeConversation = conversations.find((c) => c.id === activeConversationId) ?? null;
   const currentTool = activeTool || activeConversation?.tool || tools[0];
   const display = getDisplayInfo(currentTool);
   const activeProject =
     projects.find((p) => p.id === (pendingProjectId ?? activeConversation?.projectId)) ?? null;
+  const canManageActiveProject =
+    currentRole === "editor" && activeProject?.ownerId === CURRENT_USER_ID;
+  const projectMembers = activeProject
+    ? [activeProject.ownerId, ...activeProject.memberIds].map(getUser).filter(Boolean)
+    : [];
 
   const conversationStarted = !showWelcome && !!activeConversation;
 
@@ -105,11 +122,13 @@ const Proposition1 = () => {
   };
 
   const handleNewProject = () => {
+    if (currentRole !== "editor") return;
     setEditingProject(null);
     setProjectDialogOpen(true);
   };
 
   const handleEditProject = (project: Project) => {
+    if (currentRole !== "editor" || project.ownerId !== CURRENT_USER_ID) return;
     setEditingProject(project);
     setProjectDialogOpen(true);
   };
@@ -120,10 +139,14 @@ const Proposition1 = () => {
         prev.map((p) => (p.id === editingProject.id ? { ...p, ...data } : p)),
       );
     } else {
-      const newProject: Project = { id: `p${Date.now()}`, ...data };
+      const newProject: Project = {
+        id: `p${Date.now()}`,
+        ...data,
+        ownerId: CURRENT_USER_ID,
+        memberIds: [],
+      };
       setProjects((prev) => [...prev, newProject]);
       setExpandedProjectIds((prev) => new Set(prev).add(newProject.id));
-      // Immediately propose creating a conversation in this project
       setPendingProjectId(newProject.id);
       setActiveConversationId(null);
       setActiveTool(null);
@@ -131,19 +154,23 @@ const Proposition1 = () => {
     }
   };
 
+  const handleShareProject = (project: Project) => {
+    if (currentRole !== "editor" || project.ownerId !== CURRENT_USER_ID) return;
+    setSharingProject(project);
+    setShareDialogOpen(true);
+  };
+
+  const handleUpdateMembers = (memberIds: string[]) => {
+    if (!sharingProject) return;
+    setProjects((prev) =>
+      prev.map((p) => (p.id === sharingProject.id ? { ...p, memberIds } : p)),
+    );
+    setSharingProject((prev) => (prev ? { ...prev, memberIds } : prev));
+  };
+
   const actions = [
-    {
-      tool: tools[0],
-      label: "Lancer une conversation classique",
-      icon: Sparkles,
-      color: "#FFBF0A",
-    },
-    {
-      tool: tools[2],
-      label: "Utiliser l'assistant META",
-      icon: Megaphone,
-      color: "#9900FF",
-    },
+    { tool: tools[0], label: "Lancer une conversation classique", icon: Sparkles, color: "#FFBF0A" },
+    { tool: tools[2], label: "Utiliser l'assistant META", icon: Megaphone, color: "#9900FF" },
   ];
 
   return (
@@ -154,10 +181,13 @@ const Proposition1 = () => {
           conversations={conversations}
           expandedProjectIds={expandedProjectIds}
           activeConversationId={activeConversationId}
+          currentUserId={CURRENT_USER_ID}
+          currentRole={currentRole}
           onToggleProject={handleToggleProject}
           onNewConversation={handleNewConversation}
           onNewProject={handleNewProject}
           onEditProject={handleEditProject}
+          onShareProject={handleShareProject}
           onSelectConversation={handleSelectConversation}
         />
       )}
@@ -168,19 +198,58 @@ const Proposition1 = () => {
             <Menu className="w-5 h-5" />
           </button>
           {activeProject && (
-            <div
-              className="flex items-center gap-1.5 text-xs px-2 py-1 rounded-md"
-              style={{ background: "hsl(220, 16%, 16%)", color: "hsl(220, 14%, 80%)" }}
-            >
-              <FolderKanban className="w-3.5 h-3.5" style={{ color: "hsl(220, 10%, 60%)" }} />
-              {activeProject.title}
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5 text-xs px-2 py-1 rounded-md" style={{ background: "hsl(220, 16%, 16%)", color: "hsl(220, 14%, 80%)" }}>
+                <FolderKanban className="w-3.5 h-3.5" style={{ color: "hsl(220, 10%, 60%)" }} />
+                {activeProject.title}
+              </div>
+              <div className="flex -space-x-1.5">
+                {projectMembers.slice(0, 4).map((u) => u && <Avatar key={u.id} user={u} size={20} ring />)}
+              </div>
+              {canManageActiveProject && (
+                <>
+                  <button
+                    onClick={() => handleShareProject(activeProject)}
+                    className="p-1 rounded hover:bg-white/5 transition-colors"
+                    style={{ color: "hsl(220, 10%, 60%)" }}
+                    title="Partager"
+                  >
+                    <Share2 className="w-3.5 h-3.5" />
+                  </button>
+                  <button
+                    onClick={() => handleEditProject(activeProject)}
+                    className="p-1 rounded hover:bg-white/5 transition-colors"
+                    style={{ color: "hsl(220, 10%, 60%)" }}
+                    title="Paramètres du projet"
+                  >
+                    <Settings className="w-3.5 h-3.5" />
+                  </button>
+                </>
+              )}
             </div>
           )}
-          {conversationStarted && (
+          {conversationStarted && !activeProject && (
             <span className="text-sm font-medium" style={{ color: "hsl(220, 14%, 90%)" }}>
               {display.name}
             </span>
           )}
+
+          {/* Role switcher (mockup helper) */}
+          <div className="ml-auto flex items-center gap-1 rounded-lg p-0.5" style={{ background: "hsl(220, 16%, 14%)" }}>
+            {(["editor", "user"] as AppRole[]).map((role) => (
+              <button
+                key={role}
+                onClick={() => setCurrentRole(role)}
+                className="px-2.5 py-1 rounded-md text-xs font-medium transition-colors"
+                style={{
+                  background: currentRole === role ? "hsl(220, 16%, 20%)" : "transparent",
+                  color: currentRole === role ? "hsl(220, 14%, 92%)" : "hsl(220, 10%, 55%)",
+                }}
+              >
+                {role === "editor" ? "Editor" : "User"}
+              </button>
+            ))}
+          </div>
         </div>
 
         {showWelcome ? (
@@ -233,17 +302,20 @@ const Proposition1 = () => {
         ) : (
           <>
             {activeProject && (
-              <div
-                className="mx-4 mt-3 rounded-lg px-3 py-2 text-xs flex items-start gap-2"
-                style={{ background: "hsl(220, 16%, 15%)", border: "1px solid hsl(220, 14%, 20%)" }}
-              >
+              <div className="mx-4 mt-3 rounded-lg px-3 py-2 text-xs flex items-start gap-2" style={{ background: "hsl(220, 16%, 15%)", border: "1px solid hsl(220, 14%, 20%)" }}>
                 <FolderKanban className="w-3.5 h-3.5 mt-0.5 shrink-0" style={{ color: "hsl(220, 10%, 55%)" }} />
-                <div style={{ color: "hsl(220, 10%, 65%)" }}>
+                <div style={{ color: "hsl(220, 10%, 65%)" }} className="flex-1">
                   <span className="font-medium" style={{ color: "hsl(220, 14%, 80%)" }}>
                     Instruction du projet :
                   </span>{" "}
                   {activeProject.instruction || <em>Aucune instruction définie</em>}
                 </div>
+                {!canManageActiveProject && activeProject.ownerId !== CURRENT_USER_ID && (
+                  <div className="flex items-center gap-1 text-xs shrink-0" style={{ color: "hsl(220, 10%, 50%)" }}>
+                    <Eye className="w-3 h-3" />
+                    Partagé avec vous
+                  </div>
+                )}
               </div>
             )}
 
@@ -285,6 +357,14 @@ const Proposition1 = () => {
         onOpenChange={setProjectDialogOpen}
         initial={editingProject}
         onSubmit={handleSubmitProject}
+      />
+
+      <ShareProjectDialog
+        open={shareDialogOpen}
+        onOpenChange={setShareDialogOpen}
+        project={sharingProject}
+        currentUserId={CURRENT_USER_ID}
+        onUpdateMembers={handleUpdateMembers}
       />
     </div>
   );
