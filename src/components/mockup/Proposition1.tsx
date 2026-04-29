@@ -247,8 +247,27 @@ const Proposition1 = () => {
             </span>
           )}
 
+          {/* META tutorial entry point — visible only when META assistant is active */}
+          {isMetaTool && conversationStarted && (
+            <button
+              onClick={() => setTutorialOpen(true)}
+              className="ml-auto flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium transition-all"
+              style={{
+                background: "#9900FF15",
+                color: "#9900FF",
+                border: "1px solid #9900FF40",
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.background = "#9900FF25")}
+              onMouseLeave={(e) => (e.currentTarget.style.background = "#9900FF15")}
+              title="Voir les bonnes pratiques de l'assistant META"
+            >
+              <BookOpen className="w-3.5 h-3.5" />
+              Bonnes pratiques
+            </button>
+          )}
+
           {/* Role switcher (mockup helper) */}
-          <div className="ml-auto flex items-center gap-1 rounded-lg p-0.5" style={{ background: "hsl(220, 16%, 14%)" }}>
+          <div className={`${isMetaTool && conversationStarted ? "" : "ml-auto"} flex items-center gap-1 rounded-lg p-0.5`} style={{ background: "hsl(220, 16%, 14%)" }}>
             {(["editor", "user"] as AppRole[]).map((role) => (
               <button
                 key={role}
