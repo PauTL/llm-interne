@@ -6,7 +6,7 @@ import Sidebar from "./Sidebar";
 import ProjectDialog from "./ProjectDialog";
 import ShareProjectDialog from "./ShareProjectDialog";
 import Avatar from "./Avatar";
-import MetaTutorial from "./MetaTutorial";
+import MetaTutorial from "./MetaTutorialStepper";
 import { AppRole, Conversation, DisplayInfo, Project } from "./types";
 import { CURRENT_USER_ID, getUser } from "./users";
 
@@ -53,7 +53,7 @@ const initialConversations: Conversation[] = [
   { id: "c4", label: "Question sur le télétravail", tool: tools[1] },
 ];
 
-const Proposition1 = () => {
+const PropositionStepper = () => {
   const [projects, setProjects] = useState<Project[]>(initialProjects);
   const [conversations, setConversations] = useState<Conversation[]>(initialConversations);
   const [expandedProjectIds, setExpandedProjectIds] = useState<Set<string>>(new Set(["p1"]));
@@ -87,10 +87,10 @@ const Proposition1 = () => {
   // Auto-open tutorial first time user lands on META assistant
   useEffect(() => {
     if (!isMetaTool) return;
-    const seen = localStorage.getItem("meta-tutorial-seen");
+    const seen = localStorage.getItem("meta-tutorial-stepper-seen");
     if (!seen) {
       setTutorialOpen(true);
-      localStorage.setItem("meta-tutorial-seen", "1");
+      localStorage.setItem("meta-tutorial-stepper-seen", "1");
     }
   }, [isMetaTool]);
 
@@ -404,4 +404,4 @@ const Proposition1 = () => {
   );
 };
 
-export default Proposition1;
+export default PropositionStepper;
