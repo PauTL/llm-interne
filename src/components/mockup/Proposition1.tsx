@@ -82,6 +82,17 @@ const Proposition1 = () => {
     : [];
 
   const conversationStarted = !showWelcome && !!activeConversation;
+  const isMetaTool = currentTool?.id === "campaign";
+
+  // Auto-open tutorial first time user lands on META assistant
+  useEffect(() => {
+    if (!isMetaTool) return;
+    const seen = localStorage.getItem("meta-tutorial-seen");
+    if (!seen) {
+      setTutorialOpen(true);
+      localStorage.setItem("meta-tutorial-seen", "1");
+    }
+  }, [isMetaTool]);
 
   const handleNewConversation = () => {
     setShowWelcome(true);
