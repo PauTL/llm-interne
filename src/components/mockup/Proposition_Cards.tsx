@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
-import { Menu, Bot, Megaphone, Sparkles, Users, FolderKanban, Share2, Settings, Eye, BookOpen, LucideIcon } from "lucide-react";
+import { Menu, Bot, Megaphone, Sparkles, Users, FolderKanban, Share2, Settings, Eye, LucideIcon } from "lucide-react";
 import { tools, Tool } from "@/data/tools";
 import ChatMessages from "./ChatMessages";
 import Sidebar from "./Sidebar";
 import ProjectDialog from "./ProjectDialog";
 import ShareProjectDialog from "./ShareProjectDialog";
 import Avatar from "./Avatar";
-import MetaTutorial from "./MetaTutorial";
+import MetaSuggestionCards, { MetaHelpButton } from "./MetaSuggestionCards";
 import { AppRole, Conversation, DisplayInfo, Project } from "./types";
 import { CURRENT_USER_ID, getUser } from "./users";
 
@@ -53,7 +53,7 @@ const initialConversations: Conversation[] = [
   { id: "c4", label: "Question sur le télétravail", tool: tools[1] },
 ];
 
-const Proposition1 = () => {
+const PropositionCards = () => {
   const [projects, setProjects] = useState<Project[]>(initialProjects);
   const [conversations, setConversations] = useState<Conversation[]>(initialConversations);
   const [expandedProjectIds, setExpandedProjectIds] = useState<Set<string>>(new Set(["p1"]));
@@ -84,15 +84,7 @@ const Proposition1 = () => {
   const conversationStarted = !showWelcome && !!activeConversation;
   const isMetaTool = currentTool?.id === "campaign";
 
-  // Auto-open tutorial first time user lands on META assistant
-  useEffect(() => {
-    if (!isMetaTool) return;
-    const seen = localStorage.getItem("meta-tutorial-seen");
-    if (!seen) {
-      setTutorialOpen(true);
-      localStorage.setItem("meta-tutorial-seen", "1");
-    }
-  }, [isMetaTool]);
+  // Cards approach: no auto-open, no modal — guidance lives directly in the chat area.
 
   const handleNewConversation = () => {
     setShowWelcome(true);
