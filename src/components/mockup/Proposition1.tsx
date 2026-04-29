@@ -1,11 +1,12 @@
-import { useState } from "react";
-import { Menu, Bot, Megaphone, Sparkles, Users, FolderKanban, Share2, Settings, Eye, LucideIcon } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Menu, Bot, Megaphone, Sparkles, Users, FolderKanban, Share2, Settings, Eye, BookOpen, LucideIcon } from "lucide-react";
 import { tools, Tool } from "@/data/tools";
 import ChatMessages from "./ChatMessages";
 import Sidebar from "./Sidebar";
 import ProjectDialog from "./ProjectDialog";
 import ShareProjectDialog from "./ShareProjectDialog";
 import Avatar from "./Avatar";
+import MetaTutorial from "./MetaTutorial";
 import { AppRole, Conversation, DisplayInfo, Project } from "./types";
 import { CURRENT_USER_ID, getUser } from "./users";
 
