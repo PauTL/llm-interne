@@ -7,6 +7,7 @@ import ProjectDialog from "./ProjectDialog";
 import ShareProjectDialog from "./ShareProjectDialog";
 import Avatar from "./Avatar";
 import MetaSuggestionCards, { MetaHelpButton } from "./MetaSuggestionCards";
+import MetaTutorial from "./MetaTutorial";
 import { AppRole, Conversation, DisplayInfo, Project } from "./types";
 import { CURRENT_USER_ID, getUser } from "./users";
 
@@ -331,13 +332,18 @@ const PropositionCards = () => {
               </div>
             )}
 
-            <ChatMessages
-              toolName={display.name}
-              toolDescription={display.description}
-              displayColor={display.color}
-              DisplayIcon={display.icon}
-            />
-
+            {isMetaTool && activeConversation?.label === "Nouvelle conversation" ? (
+              <div className="flex-1 overflow-y-auto flex items-start justify-center">
+                <MetaSuggestionCards onOpenFullGuide={() => setTutorialOpen(true)} />
+              </div>
+            ) : (
+              <ChatMessages
+                toolName={display.name}
+                toolDescription={display.description}
+                displayColor={display.color}
+                DisplayIcon={display.icon}
+              />
+            )}
             <div className="p-4 shrink-0">
               <div className="max-w-2xl mx-auto">
                 <div className="flex items-center gap-2 rounded-xl px-3 py-2.5" style={{ background: "hsl(220, 16%, 16%)", border: "1px solid hsl(220, 14%, 22%)" }}>
@@ -384,4 +390,4 @@ const PropositionCards = () => {
   );
 };
 
-export default Proposition1;
+export default PropositionCards;
