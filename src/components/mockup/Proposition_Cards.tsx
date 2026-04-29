@@ -239,23 +239,11 @@ const PropositionCards = () => {
             </span>
           )}
 
-          {/* META tutorial entry point — visible only when META assistant is active */}
+          {/* META help button — discreet '?' always visible when META is active */}
           {isMetaTool && conversationStarted && (
-            <button
-              onClick={() => setTutorialOpen(true)}
-              className="ml-auto flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium transition-all"
-              style={{
-                background: "#9900FF15",
-                color: "#9900FF",
-                border: "1px solid #9900FF40",
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.background = "#9900FF25")}
-              onMouseLeave={(e) => (e.currentTarget.style.background = "#9900FF15")}
-              title="Voir les bonnes pratiques de l'assistant META"
-            >
-              <BookOpen className="w-3.5 h-3.5" />
-              Bonnes pratiques
-            </button>
+            <div className="ml-auto">
+              <MetaHelpButton onClick={() => setTutorialOpen(true)} />
+            </div>
           )}
 
           {/* Role switcher (mockup helper) */}
