@@ -68,6 +68,7 @@ const Proposition1 = () => {
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [sharingProject, setSharingProject] = useState<Project | null>(null);
+  const [tutorialOpen, setTutorialOpen] = useState(false);
 
   const activeConversation = conversations.find((c) => c.id === activeConversationId) ?? null;
   const currentTool = activeTool || activeConversation?.tool || tools[0];
