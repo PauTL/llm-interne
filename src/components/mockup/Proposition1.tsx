@@ -1,11 +1,12 @@
-import { useState } from "react";
-import { Menu, Bot, Megaphone, Sparkles, Users, FolderKanban, Share2, Settings, Eye, LucideIcon } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Menu, Bot, Megaphone, Sparkles, Users, FolderKanban, Share2, Settings, Eye, BookOpen, LucideIcon } from "lucide-react";
 import { tools, Tool } from "@/data/tools";
 import ChatMessages from "./ChatMessages";
 import Sidebar from "./Sidebar";
 import ProjectDialog from "./ProjectDialog";
 import ShareProjectDialog from "./ShareProjectDialog";
 import Avatar from "./Avatar";
+import MetaTutorial from "./MetaTutorial";
 import { AppRole, Conversation, DisplayInfo, Project } from "./types";
 import { CURRENT_USER_ID, getUser } from "./users";
 
@@ -67,6 +68,7 @@ const Proposition1 = () => {
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [sharingProject, setSharingProject] = useState<Project | null>(null);
+  const [tutorialOpen, setTutorialOpen] = useState(false);
 
   const activeConversation = conversations.find((c) => c.id === activeConversationId) ?? null;
   const currentTool = activeTool || activeConversation?.tool || tools[0];
@@ -80,6 +82,17 @@ const Proposition1 = () => {
     : [];
 
   const conversationStarted = !showWelcome && !!activeConversation;
+  const isMetaTool = currentTool?.id === "campaign";
+
+  // Auto-open tutorial first time user lands on META assistant
+  useEffect(() => {
+    if (!isMetaTool) return;
+    const seen = localStorage.getItem("meta-tutorial-seen");
+    if (!seen) {
+      setTutorialOpen(true);
+      localStorage.setItem("meta-tutorial-seen", "1");
+    }
+  }, [isMetaTool]);
 
   const handleNewConversation = () => {
     setShowWelcome(true);
@@ -234,8 +247,27 @@ const Proposition1 = () => {
             </span>
           )}
 
+          {/* META tutorial entry point — visible only when META assistant is active */}
+          {isMetaTool && conversationStarted && (
+            <button
+              onClick={() => setTutorialOpen(true)}
+              className="ml-auto flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium transition-all"
+              style={{
+                background: "#9900FF15",
+                color: "#9900FF",
+                border: "1px solid #9900FF40",
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.background = "#9900FF25")}
+              onMouseLeave={(e) => (e.currentTarget.style.background = "#9900FF15")}
+              title="Voir les bonnes pratiques de l'assistant META"
+            >
+              <BookOpen className="w-3.5 h-3.5" />
+              Bonnes pratiques
+            </button>
+          )}
+
           {/* Role switcher (mockup helper) */}
-          <div className="ml-auto flex items-center gap-1 rounded-lg p-0.5" style={{ background: "hsl(220, 16%, 14%)" }}>
+          <div className={`${isMetaTool && conversationStarted ? "" : "ml-auto"} flex items-center gap-1 rounded-lg p-0.5`} style={{ background: "hsl(220, 16%, 14%)" }}>
             {(["editor", "user"] as AppRole[]).map((role) => (
               <button
                 key={role}
@@ -366,6 +398,8 @@ const Proposition1 = () => {
         currentUserId={CURRENT_USER_ID}
         onUpdateMembers={handleUpdateMembers}
       />
+
+      <MetaTutorial open={tutorialOpen} onOpenChange={setTutorialOpen} />
     </div>
   );
 };
