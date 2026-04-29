@@ -398,6 +398,8 @@ const Proposition1 = () => {
         currentUserId={CURRENT_USER_ID}
         onUpdateMembers={handleUpdateMembers}
       />
+
+      <MetaTutorial open={tutorialOpen} onOpenChange={setTutorialOpen} />
     </div>
   );
 };
