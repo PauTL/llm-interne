@@ -96,41 +96,6 @@ const MetaSuggestionCards = ({ onUsePrompt, onOpenFullGuide }: MetaSuggestionCar
         </div>
       </div>
 
-      {/* Example prompts */}
-      <div>
-        <div className="flex items-center gap-1.5 mb-3 px-1">
-          <Sparkles className="w-3.5 h-3.5" style={{ color: META_COLOR }} />
-          <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: "hsl(220, 14%, 75%)" }}>
-            Essayez avec un exemple
-          </span>
-        </div>
-        <div className="space-y-2">
-          {examplePrompts.map((prompt, i) => (
-            <button
-              key={i}
-              onClick={() => onUsePrompt?.(prompt)}
-              onMouseEnter={() => setHoveredPrompt(i)}
-              onMouseLeave={() => setHoveredPrompt(null)}
-              className="w-full text-left rounded-xl px-4 py-3 transition-all flex items-center justify-between gap-3 group"
-              style={{
-                background: "hsl(220, 16%, 15%)",
-                border: `1px solid ${hoveredPrompt === i ? META_COLOR : "hsl(220, 14%, 22%)"}`,
-              }}
-            >
-              <span className="text-sm" style={{ color: "hsl(220, 14%, 85%)" }}>
-                {prompt}
-              </span>
-              <ChevronRight
-                className="w-4 h-4 shrink-0 transition-all"
-                style={{
-                  color: hoveredPrompt === i ? META_COLOR : "hsl(220, 10%, 40%)",
-                  transform: hoveredPrompt === i ? "translateX(2px)" : "translateX(0)",
-                }}
-              />
-            </button>
-          ))}
-        </div>
-      </div>
     </div>
   );
 };
