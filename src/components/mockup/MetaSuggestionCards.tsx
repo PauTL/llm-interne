@@ -15,14 +15,14 @@ const tips = [
     desc: "Demandez-lui de lire et comprendre avant toute création",
   },
   {
+    icon: ClipboardList,
+    title: "Donner les infos détaillées",
+    desc: "Objectif, ciblage géo, intérêts, budget…",
+  },
+  {
     icon: ListChecks,
     title: "Demander un récap avant création",
     desc: "Pour ajuster si besoin avant de lancer",
-  },
-  {
-    icon: ClipboardList,
-    title: "Vérifier les infos détaillées",
-    desc: "Objectif, ciblage géo, intérêts, budget…",
   },
 ];
 
