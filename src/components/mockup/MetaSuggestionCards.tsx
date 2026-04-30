@@ -1,4 +1,4 @@
-import { Megaphone, Target, Users, Sparkles, HelpCircle, Lightbulb, ChevronRight } from "lucide-react";
+import { Megaphone, FileSearch, ListChecks, ClipboardList, HelpCircle, Lightbulb, ChevronRight } from "lucide-react";
 import { useState } from "react";
 
 interface MetaSuggestionCardsProps {
@@ -10,19 +10,19 @@ const META_COLOR = "#9900FF";
 
 const tips = [
   {
-    icon: Target,
-    title: "Soyez précis sur l'objectif",
-    desc: "Notoriété, trafic ou conversions ?",
+    icon: FileSearch,
+    title: "Analyser le plan média d'abord",
+    desc: "Demandez-lui de lire et comprendre avant toute création",
   },
   {
-    icon: Users,
-    title: "Décrivez votre audience",
-    desc: "Âge, localisation, centres d'intérêt",
+    icon: ListChecks,
+    title: "Demander un récap avant création",
+    desc: "Pour ajuster si besoin avant de lancer",
   },
   {
-    icon: Sparkles,
-    title: "Indiquez budget & durée",
-    desc: "Pour un plan média réaliste",
+    icon: ClipboardList,
+    title: "Vérifier les infos détaillées",
+    desc: "Objectif, ciblage géo, intérêts, budget…",
   },
 ];
 
