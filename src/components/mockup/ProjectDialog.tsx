@@ -32,21 +32,21 @@ const ProjectDialog = ({ open, onOpenChange, initial, onSubmit }: ProjectDialogP
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className="sm:max-w-lg border-0"
-        style={{ background: "hsl(220, 18%, 11%)", color: "hsl(220, 14%, 90%)" }}
+        className="sm:max-w-lg"
+        style={{ background: "hsl(0, 0%, 100%)", color: "hsl(220, 20%, 18%)", borderColor: "hsl(220, 14%, 88%)" }}
       >
         <DialogHeader>
-          <DialogTitle style={{ color: "hsl(220, 14%, 95%)" }}>
+          <DialogTitle style={{ color: "hsl(220, 20%, 12%)" }}>
             {isEdit ? "Modifier le projet" : "Nouveau projet"}
           </DialogTitle>
-          <DialogDescription style={{ color: "hsl(220, 10%, 55%)" }}>
+          <DialogDescription style={{ color: "hsl(220, 10%, 45%)" }}>
             Toutes les conversations du projet partageront la même instruction.
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4 py-2">
           <div className="space-y-1.5">
-            <label className="text-xs font-medium" style={{ color: "hsl(220, 10%, 65%)" }}>
+            <label className="text-xs font-medium" style={{ color: "hsl(220, 14%, 35%)" }}>
               Titre du projet
             </label>
             <input
@@ -56,15 +56,15 @@ const ProjectDialog = ({ open, onOpenChange, initial, onSubmit }: ProjectDialogP
               placeholder="Ex. Campagne été 2026"
               className="w-full rounded-lg px-3 py-2 text-sm outline-none"
               style={{
-                background: "hsl(220, 16%, 14%)",
-                color: "hsl(220, 14%, 92%)",
-                border: "1px solid hsl(220, 14%, 22%)",
+                background: "hsl(220, 16%, 97%)",
+                color: "hsl(220, 20%, 18%)",
+                border: "1px solid hsl(220, 14%, 88%)",
               }}
             />
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-medium" style={{ color: "hsl(220, 10%, 65%)" }}>
+            <label className="text-xs font-medium" style={{ color: "hsl(220, 14%, 35%)" }}>
               Instruction (préprompt)
             </label>
             <textarea
@@ -74,9 +74,9 @@ const ProjectDialog = ({ open, onOpenChange, initial, onSubmit }: ProjectDialogP
               placeholder="Donnez le contexte, le ton et les objectifs partagés par toutes les conversations…"
               className="w-full rounded-lg px-3 py-2 text-sm outline-none resize-none"
               style={{
-                background: "hsl(220, 16%, 14%)",
-                color: "hsl(220, 14%, 92%)",
-                border: "1px solid hsl(220, 14%, 22%)",
+                background: "hsl(220, 16%, 97%)",
+                color: "hsl(220, 20%, 18%)",
+                border: "1px solid hsl(220, 14%, 88%)",
               }}
             />
           </div>
@@ -86,7 +86,7 @@ const ProjectDialog = ({ open, onOpenChange, initial, onSubmit }: ProjectDialogP
           <button
             onClick={() => onOpenChange(false)}
             className="px-4 py-2 rounded-lg text-sm transition-colors"
-            style={{ color: "hsl(220, 10%, 70%)", background: "transparent" }}
+            style={{ color: "hsl(220, 14%, 35%)", background: "transparent" }}
           >
             Annuler
           </button>

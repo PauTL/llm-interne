@@ -85,8 +85,6 @@ const PropositionCards = () => {
   const conversationStarted = !showWelcome && !!activeConversation;
   const isMetaTool = currentTool?.id === "campaign";
 
-  // Cards approach: no auto-open, no modal — guidance lives directly in the chat area.
-
   const handleNewConversation = () => {
     setShowWelcome(true);
     setActiveTool(null);
@@ -179,8 +177,20 @@ const PropositionCards = () => {
     { tool: tools[2], label: "Utiliser l'assistant META", icon: Megaphone, color: "#9900FF" },
   ];
 
+  // Light theme tokens
+  const C = {
+    border: "hsl(220, 14%, 88%)",
+    chatBg: "hsl(0, 0%, 100%)",
+    surface: "hsl(220, 16%, 96%)",
+    surfaceStrong: "hsl(220, 16%, 93%)",
+    textStrong: "hsl(220, 20%, 15%)",
+    text: "hsl(220, 14%, 25%)",
+    textMuted: "hsl(220, 10%, 45%)",
+    textSubtle: "hsl(220, 10%, 55%)",
+  };
+
   return (
-    <div className="flex h-full rounded-xl overflow-hidden border" style={{ borderColor: "hsl(220, 14%, 20%)" }}>
+    <div className="flex h-full rounded-xl overflow-hidden border" style={{ borderColor: C.border, background: C.chatBg }}>
       {sidebarOpen && (
         <Sidebar
           projects={projects}
@@ -198,15 +208,15 @@ const PropositionCards = () => {
         />
       )}
 
-      <div className="flex-1 flex flex-col" style={{ background: "hsl(220, 16%, 12%)" }}>
-        <div className="h-12 flex items-center px-4 border-b shrink-0 gap-3" style={{ borderColor: "hsl(220, 14%, 18%)" }}>
-          <button onClick={() => setSidebarOpen(!sidebarOpen)} className="p-1.5 rounded-md transition-colors" style={{ color: "hsl(220, 10%, 55%)" }}>
+      <div className="flex-1 flex flex-col" style={{ background: C.chatBg }}>
+        <div className="h-12 flex items-center px-4 border-b shrink-0 gap-3" style={{ borderColor: C.border }}>
+          <button onClick={() => setSidebarOpen(!sidebarOpen)} className="p-1.5 rounded-md transition-colors hover:bg-black/5" style={{ color: C.textMuted }}>
             <Menu className="w-5 h-5" />
           </button>
           {activeProject && (
             <div className="flex items-center gap-2">
-              <div className="flex items-center gap-1.5 text-xs px-2 py-1 rounded-md" style={{ background: "hsl(220, 16%, 16%)", color: "hsl(220, 14%, 80%)" }}>
-                <FolderKanban className="w-3.5 h-3.5" style={{ color: "hsl(220, 10%, 60%)" }} />
+              <div className="flex items-center gap-1.5 text-xs px-2 py-1 rounded-md" style={{ background: C.surface, color: C.text }}>
+                <FolderKanban className="w-3.5 h-3.5" style={{ color: C.textMuted }} />
                 {activeProject.title}
               </div>
               <div className="flex -space-x-1.5">
@@ -216,16 +226,16 @@ const PropositionCards = () => {
                 <>
                   <button
                     onClick={() => handleShareProject(activeProject)}
-                    className="p-1 rounded hover:bg-white/5 transition-colors"
-                    style={{ color: "hsl(220, 10%, 60%)" }}
+                    className="p-1 rounded hover:bg-black/5 transition-colors"
+                    style={{ color: C.textMuted }}
                     title="Partager"
                   >
                     <Share2 className="w-3.5 h-3.5" />
                   </button>
                   <button
                     onClick={() => handleEditProject(activeProject)}
-                    className="p-1 rounded hover:bg-white/5 transition-colors"
-                    style={{ color: "hsl(220, 10%, 60%)" }}
+                    className="p-1 rounded hover:bg-black/5 transition-colors"
+                    style={{ color: C.textMuted }}
                     title="Paramètres du projet"
                   >
                     <Settings className="w-3.5 h-3.5" />
@@ -235,28 +245,27 @@ const PropositionCards = () => {
             </div>
           )}
           {conversationStarted && !activeProject && (
-            <span className="text-sm font-medium" style={{ color: "hsl(220, 14%, 90%)" }}>
+            <span className="text-sm font-medium" style={{ color: C.textStrong }}>
               {display.name}
             </span>
           )}
 
-          {/* META help button — discreet '?' always visible when META is active */}
           {isMetaTool && conversationStarted && (
             <div className="ml-auto">
               <MetaHelpButton onClick={() => setTutorialOpen(true)} />
             </div>
           )}
 
-          {/* Role switcher (mockup helper) */}
-          <div className={`${isMetaTool && conversationStarted ? "" : "ml-auto"} flex items-center gap-1 rounded-lg p-0.5`} style={{ background: "hsl(220, 16%, 14%)" }}>
+          <div className={`${isMetaTool && conversationStarted ? "" : "ml-auto"} flex items-center gap-1 rounded-lg p-0.5`} style={{ background: C.surface }}>
             {(["editor", "user"] as AppRole[]).map((role) => (
               <button
                 key={role}
                 onClick={() => setCurrentRole(role)}
                 className="px-2.5 py-1 rounded-md text-xs font-medium transition-colors"
                 style={{
-                  background: currentRole === role ? "hsl(220, 16%, 20%)" : "transparent",
-                  color: currentRole === role ? "hsl(220, 14%, 92%)" : "hsl(220, 10%, 55%)",
+                  background: currentRole === role ? "hsl(0, 0%, 100%)" : "transparent",
+                  color: currentRole === role ? C.textStrong : C.textMuted,
+                  boxShadow: currentRole === role ? "0 1px 2px rgba(0,0,0,0.06)" : undefined,
                 }}
               >
                 {role === "editor" ? "Editor" : "User"}
@@ -273,16 +282,16 @@ const PropositionCards = () => {
                   <Bot className="w-6 h-6 text-white" />
                 </div>
               </div>
-              <h2 className="text-2xl font-semibold mb-2" style={{ color: "hsl(220, 14%, 92%)" }}>
+              <h2 className="text-2xl font-semibold mb-2" style={{ color: C.textStrong }}>
                 Comment puis-je vous aider aujourd'hui ?
               </h2>
-              <p className="text-sm mb-3" style={{ color: "hsl(220, 10%, 50%)" }}>
+              <p className="text-sm mb-3" style={{ color: C.textMuted }}>
                 Sélectionnez une action ci-dessous
               </p>
               {activeProject && (
-                <p className="text-xs mb-6" style={{ color: "hsl(220, 10%, 60%)" }}>
+                <p className="text-xs mb-6" style={{ color: C.textSubtle }}>
                   Cette conversation héritera de l'instruction du projet{" "}
-                  <strong style={{ color: "hsl(220, 14%, 80%)" }}>{activeProject.title}</strong>
+                  <strong style={{ color: C.text }}>{activeProject.title}</strong>
                 </p>
               )}
               <div className="flex gap-3 justify-center mt-6">
@@ -291,20 +300,20 @@ const PropositionCards = () => {
                     key={i}
                     onClick={() => handleSelectTool(action.tool)}
                     className="flex items-center gap-3 rounded-xl px-5 py-4 text-left transition-all w-64"
-                    style={{ background: "hsl(220, 16%, 15%)", border: "1px solid hsl(220, 14%, 22%)" }}
+                    style={{ background: "hsl(0, 0%, 100%)", border: `1px solid ${C.border}` }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.background = "hsl(220, 16%, 18%)";
+                      e.currentTarget.style.background = C.surface;
                       e.currentTarget.style.borderColor = action.color;
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.background = "hsl(220, 16%, 15%)";
-                      e.currentTarget.style.borderColor = "hsl(220, 14%, 22%)";
+                      e.currentTarget.style.background = "hsl(0, 0%, 100%)";
+                      e.currentTarget.style.borderColor = C.border;
                     }}
                   >
                     <div className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0" style={{ backgroundColor: action.color }}>
                       <action.icon className="w-4.5 h-4.5 text-white" />
                     </div>
-                    <div className="text-sm font-medium" style={{ color: "hsl(220, 14%, 92%)" }}>
+                    <div className="text-sm font-medium" style={{ color: C.textStrong }}>
                       {action.label}
                     </div>
                   </button>
@@ -315,16 +324,16 @@ const PropositionCards = () => {
         ) : (
           <>
             {activeProject && (
-              <div className="mx-4 mt-3 rounded-lg px-3 py-2 text-xs flex items-start gap-2" style={{ background: "hsl(220, 16%, 15%)", border: "1px solid hsl(220, 14%, 20%)" }}>
-                <FolderKanban className="w-3.5 h-3.5 mt-0.5 shrink-0" style={{ color: "hsl(220, 10%, 55%)" }} />
-                <div style={{ color: "hsl(220, 10%, 65%)" }} className="flex-1">
-                  <span className="font-medium" style={{ color: "hsl(220, 14%, 80%)" }}>
+              <div className="mx-4 mt-3 rounded-lg px-3 py-2 text-xs flex items-start gap-2" style={{ background: C.surface, border: `1px solid ${C.border}` }}>
+                <FolderKanban className="w-3.5 h-3.5 mt-0.5 shrink-0" style={{ color: C.textMuted }} />
+                <div style={{ color: C.text }} className="flex-1">
+                  <span className="font-medium" style={{ color: C.textStrong }}>
                     Instruction du projet :
                   </span>{" "}
                   {activeProject.instruction || <em>Aucune instruction définie</em>}
                 </div>
                 {!canManageActiveProject && activeProject.ownerId !== CURRENT_USER_ID && (
-                  <div className="flex items-center gap-1 text-xs shrink-0" style={{ color: "hsl(220, 10%, 50%)" }}>
+                  <div className="flex items-center gap-1 text-xs shrink-0" style={{ color: C.textSubtle }}>
                     <Eye className="w-3 h-3" />
                     Partagé avec vous
                   </div>
@@ -346,10 +355,10 @@ const PropositionCards = () => {
             )}
             <div className="p-4 shrink-0">
               <div className="max-w-2xl mx-auto">
-                <div className="flex items-center gap-2 rounded-xl px-3 py-2.5" style={{ background: "hsl(220, 16%, 16%)", border: "1px solid hsl(220, 14%, 22%)" }}>
+                <div className="flex items-center gap-2 rounded-xl px-3 py-2.5" style={{ background: "hsl(0, 0%, 100%)", border: `1px solid ${C.border}`, boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
                   <div
                     className="flex items-center gap-1.5 rounded-full pl-1.5 pr-2.5 py-1 text-xs font-medium shrink-0"
-                    style={{ background: `${display.color}20`, color: display.color, border: `1px solid ${display.color}40` }}
+                    style={{ background: `${display.color}15`, color: display.color, border: `1px solid ${display.color}40` }}
                   >
                     <div className="w-5 h-5 rounded-full flex items-center justify-center" style={{ backgroundColor: display.color }}>
                       <display.icon className="w-3 h-3 text-white" />
@@ -357,7 +366,7 @@ const PropositionCards = () => {
                     {display.shortName}
                   </div>
 
-                  <input type="text" placeholder="Posez votre question…" className="flex-1 bg-transparent outline-none text-sm" style={{ color: "hsl(220, 14%, 90%)" }} />
+                  <input type="text" placeholder="Posez votre question…" className="flex-1 bg-transparent outline-none text-sm" style={{ color: C.textStrong }} />
                   <button className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ background: display.color }}>
                     <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M12 5l7 7-7 7" />

@@ -31,9 +31,9 @@ const MetaTutorial = ({ open, onOpenChange, onUsePrompt }: MetaTutorialProps) =>
       <SheetContent
         side="right"
         className="w-full sm:max-w-md overflow-y-auto border-l p-0"
-        style={{ background: "hsl(220, 16%, 12%)", borderColor: "hsl(220, 14%, 20%)" }}
+        style={{ background: "hsl(0, 0%, 100%)", borderColor: "hsl(220, 14%, 88%)" }}
       >
-        <div className="p-6 border-b" style={{ borderColor: "hsl(220, 14%, 18%)" }}>
+        <div className="p-6 border-b" style={{ borderColor: "hsl(220, 14%, 88%)" }}>
           <SheetHeader className="text-left space-y-3">
             <div className="flex items-center gap-3">
               <div
@@ -43,10 +43,10 @@ const MetaTutorial = ({ open, onOpenChange, onUsePrompt }: MetaTutorialProps) =>
                 <Megaphone className="w-5 h-5 text-white" />
               </div>
               <div>
-                <SheetTitle style={{ color: "hsl(220, 14%, 92%)" }}>
+                <SheetTitle style={{ color: "hsl(220, 20%, 15%)" }}>
                   Bonnes pratiques · Assistant META
                 </SheetTitle>
-                <SheetDescription style={{ color: "hsl(220, 10%, 55%)" }}>
+                <SheetDescription style={{ color: "hsl(220, 10%, 45%)" }}>
                   Tirez le meilleur de l'assistant de création de campagnes
                 </SheetDescription>
               </div>
@@ -59,12 +59,12 @@ const MetaTutorial = ({ open, onOpenChange, onUsePrompt }: MetaTutorialProps) =>
           <section>
             <div className="flex items-center gap-2 mb-3">
               <Target className="w-4 h-4" style={{ color: META_COLOR }} />
-              <h3 className="text-sm font-semibold" style={{ color: "hsl(220, 14%, 90%)" }}>
+              <h3 className="text-sm font-semibold" style={{ color: "hsl(220, 20%, 18%)" }}>
                 1. Soyez précis sur l'objectif
               </h3>
             </div>
-            <p className="text-xs leading-relaxed mb-2" style={{ color: "hsl(220, 10%, 65%)" }}>
-              Indiquez toujours <strong style={{ color: "hsl(220, 14%, 80%)" }}>l'objectif</strong> (notoriété, trafic, conversions), le <strong style={{ color: "hsl(220, 14%, 80%)" }}>budget</strong> et la <strong style={{ color: "hsl(220, 14%, 80%)" }}>durée</strong> de la campagne.
+            <p className="text-xs leading-relaxed mb-2" style={{ color: "hsl(220, 14%, 35%)" }}>
+              Indiquez toujours <strong style={{ color: "hsl(220, 20%, 18%)" }}>l'objectif</strong> (notoriété, trafic, conversions), le <strong style={{ color: "hsl(220, 20%, 18%)" }}>budget</strong> et la <strong style={{ color: "hsl(220, 20%, 18%)" }}>durée</strong> de la campagne.
             </p>
           </section>
 
@@ -72,11 +72,11 @@ const MetaTutorial = ({ open, onOpenChange, onUsePrompt }: MetaTutorialProps) =>
           <section>
             <div className="flex items-center gap-2 mb-3">
               <Sparkles className="w-4 h-4" style={{ color: META_COLOR }} />
-              <h3 className="text-sm font-semibold" style={{ color: "hsl(220, 14%, 90%)" }}>
+              <h3 className="text-sm font-semibold" style={{ color: "hsl(220, 20%, 18%)" }}>
                 2. Décrivez votre audience
               </h3>
             </div>
-            <p className="text-xs leading-relaxed" style={{ color: "hsl(220, 10%, 65%)" }}>
+            <p className="text-xs leading-relaxed" style={{ color: "hsl(220, 14%, 35%)" }}>
               Âge, genre, localisation, centres d'intérêt, comportements. Plus le ciblage est clair, meilleures sont les recommandations.
             </p>
           </section>
@@ -85,26 +85,26 @@ const MetaTutorial = ({ open, onOpenChange, onUsePrompt }: MetaTutorialProps) =>
           <section>
             <div className="flex items-center gap-2 mb-3">
               <Lightbulb className="w-4 h-4" style={{ color: META_COLOR }} />
-              <h3 className="text-sm font-semibold" style={{ color: "hsl(220, 14%, 90%)" }}>
+              <h3 className="text-sm font-semibold" style={{ color: "hsl(220, 20%, 18%)" }}>
                 3. À faire / à éviter
               </h3>
             </div>
             <div className="space-y-2">
               <div
                 className="rounded-lg p-3 flex gap-2"
-                style={{ background: "hsl(142, 30%, 12%)", border: "1px solid hsl(142, 40%, 20%)" }}
+                style={{ background: "hsl(142, 60%, 96%)", border: "1px solid hsl(142, 50%, 80%)" }}
               >
-                <CheckCircle2 className="w-4 h-4 mt-0.5 shrink-0" style={{ color: "hsl(142, 71%, 55%)" }} />
-                <p className="text-xs" style={{ color: "hsl(142, 30%, 85%)" }}>
+                <CheckCircle2 className="w-4 h-4 mt-0.5 shrink-0" style={{ color: "hsl(142, 71%, 35%)" }} />
+                <p className="text-xs" style={{ color: "hsl(142, 40%, 22%)" }}>
                   "Campagne conversions, 3000€/mois, audience 30-45 ans urbains, intéressés par la déco design."
                 </p>
               </div>
               <div
                 className="rounded-lg p-3 flex gap-2"
-                style={{ background: "hsl(0, 30%, 12%)", border: "1px solid hsl(0, 40%, 20%)" }}
+                style={{ background: "hsl(0, 70%, 97%)", border: "1px solid hsl(0, 60%, 85%)" }}
               >
-                <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0" style={{ color: "hsl(0, 75%, 60%)" }} />
-                <p className="text-xs" style={{ color: "hsl(0, 30%, 85%)" }}>
+                <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0" style={{ color: "hsl(0, 75%, 45%)" }} />
+                <p className="text-xs" style={{ color: "hsl(0, 50%, 30%)" }}>
                   "Fais-moi une pub pour mon site." → trop vague, l'assistant manque de contexte.
                 </p>
               </div>
@@ -115,7 +115,7 @@ const MetaTutorial = ({ open, onOpenChange, onUsePrompt }: MetaTutorialProps) =>
           <section>
             <div className="flex items-center gap-2 mb-3">
               <Megaphone className="w-4 h-4" style={{ color: META_COLOR }} />
-              <h3 className="text-sm font-semibold" style={{ color: "hsl(220, 14%, 90%)" }}>
+              <h3 className="text-sm font-semibold" style={{ color: "hsl(220, 20%, 18%)" }}>
                 4. Exemples de prompts
               </h3>
             </div>
@@ -125,12 +125,12 @@ const MetaTutorial = ({ open, onOpenChange, onUsePrompt }: MetaTutorialProps) =>
                   key={i}
                   onClick={() => handleCopy(p, i)}
                   className="w-full text-left rounded-lg p-3 transition-colors group"
-                  style={{ background: "hsl(220, 16%, 15%)", border: "1px solid hsl(220, 14%, 22%)" }}
+                  style={{ background: "hsl(220, 16%, 97%)", border: "1px solid hsl(220, 14%, 88%)" }}
                   onMouseEnter={(e) => (e.currentTarget.style.borderColor = META_COLOR)}
-                  onMouseLeave={(e) => (e.currentTarget.style.borderColor = "hsl(220, 14%, 22%)")}
+                  onMouseLeave={(e) => (e.currentTarget.style.borderColor = "hsl(220, 14%, 88%)")}
                 >
                   <div className="flex items-start justify-between gap-2">
-                    <p className="text-xs leading-relaxed" style={{ color: "hsl(220, 10%, 75%)" }}>
+                    <p className="text-xs leading-relaxed" style={{ color: "hsl(220, 14%, 30%)" }}>
                       {p}
                     </p>
                     <span
@@ -148,7 +148,7 @@ const MetaTutorial = ({ open, onOpenChange, onUsePrompt }: MetaTutorialProps) =>
 
           <div
             className="rounded-lg p-3 text-xs"
-            style={{ background: `${META_COLOR}15`, border: `1px solid ${META_COLOR}40`, color: "hsl(220, 14%, 85%)" }}
+            style={{ background: `${META_COLOR}10`, border: `1px solid ${META_COLOR}40`, color: "hsl(220, 20%, 25%)" }}
           >
             💡 Astuce : vous pouvez rouvrir ce guide à tout moment via le bouton{" "}
             <strong>Bonnes pratiques</strong> en haut de la conversation.

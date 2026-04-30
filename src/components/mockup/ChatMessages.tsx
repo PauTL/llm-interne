@@ -18,7 +18,7 @@ const ChatMessages = ({ toolName, toolDescription, displayColor, DisplayIcon }: 
         >
           <DisplayIcon className="w-4 h-4 text-white" />
         </div>
-        <div className="rounded-2xl rounded-tl-md px-4 py-3 text-sm" style={{ background: "hsl(220, 16%, 18%)", color: "hsl(220, 14%, 90%)" }}>
+        <div className="rounded-2xl rounded-tl-md px-4 py-3 text-sm" style={{ background: "hsl(220, 16%, 95%)", color: "hsl(220, 20%, 18%)" }}>
           Bonjour ! Je suis <strong>{toolName}</strong>. {toolDescription}. Comment puis-je vous aider ?
         </div>
       </div>
@@ -38,7 +38,7 @@ const ChatMessages = ({ toolName, toolDescription, displayColor, DisplayIcon }: 
         >
           <DisplayIcon className="w-4 h-4 text-white" />
         </div>
-        <div className="rounded-2xl rounded-tl-md px-4 py-3 text-sm" style={{ background: "hsl(220, 16%, 18%)", color: "hsl(220, 14%, 90%)" }}>
+        <div className="rounded-2xl rounded-tl-md px-4 py-3 text-sm" style={{ background: "hsl(220, 16%, 95%)", color: "hsl(220, 20%, 18%)" }}>
           Bien sûr, je suis là pour vous aider. N'hésitez pas à me poser votre question !
         </div>
       </div>
