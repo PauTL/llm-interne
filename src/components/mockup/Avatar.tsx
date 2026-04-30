@@ -15,7 +15,7 @@ const Avatar = ({ user, size = 24, ring = false }: AvatarProps) => (
       width: size,
       height: size,
       fontSize: size * 0.42,
-      boxShadow: ring ? "0 0 0 2px hsl(220, 18%, 9%)" : undefined,
+      boxShadow: ring ? "0 0 0 2px hsl(0, 0%, 100%)" : undefined,
     }}
     title={user.name}
   >

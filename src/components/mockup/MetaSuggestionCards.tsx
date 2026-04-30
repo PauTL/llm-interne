@@ -45,10 +45,10 @@ const MetaSuggestionCards = ({ onUsePrompt, onOpenFullGuide }: MetaSuggestionCar
         >
           <Megaphone className="w-7 h-7 text-white" />
         </div>
-        <h2 className="text-xl font-semibold mb-1.5" style={{ color: "hsl(220, 14%, 92%)" }}>
+        <h2 className="text-xl font-semibold mb-1.5" style={{ color: "hsl(220, 20%, 18%)" }}>
           Assistant META
         </h2>
-        <p className="text-sm" style={{ color: "hsl(220, 10%, 60%)" }}>
+        <p className="text-sm" style={{ color: "hsl(220, 10%, 45%)" }}>
           Créez et optimisez vos campagnes en langage naturel
         </p>
       </div>
@@ -58,7 +58,7 @@ const MetaSuggestionCards = ({ onUsePrompt, onOpenFullGuide }: MetaSuggestionCar
         <div className="flex items-center justify-between mb-3 px-1">
           <div className="flex items-center gap-1.5">
             <Lightbulb className="w-3.5 h-3.5" style={{ color: META_COLOR }} />
-            <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: "hsl(220, 14%, 75%)" }}>
+            <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: "hsl(220, 14%, 35%)" }}>
               Bonnes pratiques
             </span>
           </div>
@@ -79,15 +79,16 @@ const MetaSuggestionCards = ({ onUsePrompt, onOpenFullGuide }: MetaSuggestionCar
                 key={i}
                 className="rounded-xl p-3 transition-all"
                 style={{
-                  background: "hsl(220, 16%, 15%)",
-                  border: "1px solid hsl(220, 14%, 22%)",
+                  background: "hsl(0, 0%, 100%)",
+                  border: "1px solid hsl(220, 14%, 88%)",
+                  boxShadow: "0 1px 2px rgba(0,0,0,0.03)",
                 }}
               >
                 <Icon className="w-4 h-4 mb-2" style={{ color: META_COLOR }} />
-                <div className="text-xs font-semibold mb-0.5" style={{ color: "hsl(220, 14%, 88%)" }}>
+                <div className="text-xs font-semibold mb-0.5" style={{ color: "hsl(220, 20%, 20%)" }}>
                   {tip.title}
                 </div>
-                <div className="text-[11px] leading-snug" style={{ color: "hsl(220, 10%, 55%)" }}>
+                <div className="text-[11px] leading-snug" style={{ color: "hsl(220, 10%, 50%)" }}>
                   {tip.desc}
                 </div>
               </div>

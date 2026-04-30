@@ -36,6 +36,16 @@ interface SidebarProps {
   onSelectConversation: (id: string) => void;
 }
 
+// Light theme tokens
+const SIDEBAR_BG = "hsl(220, 20%, 97%)";
+const SURFACE = "hsl(220, 16%, 93%)";
+const SURFACE_HOVER = "hsl(220, 16%, 90%)";
+const BORDER = "hsl(220, 14%, 88%)";
+const TEXT = "hsl(220, 20%, 18%)";
+const TEXT_MUTED = "hsl(220, 10%, 45%)";
+const TEXT_SUBTLE = "hsl(220, 10%, 55%)";
+const TEXT_FAINT = "hsl(220, 10%, 60%)";
+
 const Sidebar = ({
   projects,
   conversations,
@@ -54,12 +64,12 @@ const Sidebar = ({
   const canManageProjects = currentRole === "editor";
 
   return (
-    <div className="w-64 flex flex-col shrink-0" style={{ background: "hsl(220, 18%, 9%)" }}>
-      <div className="p-3 border-b space-y-2" style={{ borderColor: "hsl(220, 14%, 16%)" }}>
+    <div className="w-64 flex flex-col shrink-0 border-r" style={{ background: SIDEBAR_BG, borderColor: BORDER }}>
+      <div className="p-3 border-b space-y-2" style={{ borderColor: BORDER }}>
         <button
           onClick={onNewConversation}
-          className="w-full flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm transition-colors"
-          style={{ background: "hsl(220, 16%, 14%)", color: "hsl(220, 14%, 90%)" }}
+          className="w-full flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm transition-colors hover:opacity-90"
+          style={{ background: "hsl(0, 0%, 100%)", color: TEXT, border: `1px solid ${BORDER}` }}
         >
           <Plus className="w-4 h-4" />
           Nouvelle conversation
@@ -67,22 +77,22 @@ const Sidebar = ({
       </div>
 
       <div className="px-3 py-2">
-        <div className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm" style={{ background: "hsl(220, 16%, 14%)" }}>
-          <Search className="w-3.5 h-3.5" style={{ color: "hsl(220, 10%, 45%)" }} />
-          <span style={{ color: "hsl(220, 10%, 45%)" }}>Rechercher…</span>
+        <div className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm" style={{ background: SURFACE }}>
+          <Search className="w-3.5 h-3.5" style={{ color: TEXT_SUBTLE }} />
+          <span style={{ color: TEXT_SUBTLE }}>Rechercher…</span>
         </div>
       </div>
 
       <div className="flex-1 overflow-y-auto px-2 py-1">
         <div className="px-2 py-2 flex items-center justify-between">
-          <span className="text-xs font-medium uppercase tracking-wider" style={{ color: "hsl(220, 10%, 40%)" }}>
+          <span className="text-xs font-medium uppercase tracking-wider" style={{ color: TEXT_MUTED }}>
             Projets
           </span>
           {canManageProjects && (
             <button
               onClick={onNewProject}
-              className="p-1 rounded hover:bg-white/5 transition-colors"
-              style={{ color: "hsl(220, 10%, 55%)" }}
+              className="p-1 rounded hover:bg-black/5 transition-colors"
+              style={{ color: TEXT_MUTED }}
               title="Nouveau projet"
             >
               <Plus className="w-3.5 h-3.5" />
@@ -103,18 +113,18 @@ const Sidebar = ({
           return (
             <div key={project.id} className="mb-1">
               <div
-                className="group flex items-center gap-1.5 px-2 py-2 rounded-lg cursor-pointer text-sm transition-colors"
-                style={{ color: "hsl(220, 14%, 80%)" }}
+                className="group flex items-center gap-1.5 px-2 py-2 rounded-lg cursor-pointer text-sm transition-colors hover:bg-black/5"
+                style={{ color: TEXT }}
                 onClick={() => onToggleProject(project.id)}
               >
                 <ChevronRight
                   className="w-3.5 h-3.5 transition-transform shrink-0"
                   style={{
                     transform: expanded ? "rotate(90deg)" : "rotate(0deg)",
-                    color: "hsl(220, 10%, 50%)",
+                    color: TEXT_SUBTLE,
                   }}
                 />
-                <FolderKanban className="w-4 h-4 shrink-0" style={{ color: "hsl(220, 10%, 60%)" }} />
+                <FolderKanban className="w-4 h-4 shrink-0" style={{ color: TEXT_FAINT }} />
                 <span className="truncate flex-1">{project.title}</span>
 
                 {isShared && (
@@ -130,8 +140,8 @@ const Sidebar = ({
                         e.stopPropagation();
                         onShareProject(project);
                       }}
-                      className="p-0.5 rounded hover:bg-white/10"
-                      style={{ color: "hsl(220, 10%, 60%)" }}
+                      className="p-0.5 rounded hover:bg-black/10"
+                      style={{ color: TEXT_FAINT }}
                       title="Partager"
                     >
                       <Share2 className="w-3.5 h-3.5" />
@@ -141,8 +151,8 @@ const Sidebar = ({
                         e.stopPropagation();
                         onEditProject(project);
                       }}
-                      className="p-0.5 rounded hover:bg-white/10"
-                      style={{ color: "hsl(220, 10%, 60%)" }}
+                      className="p-0.5 rounded hover:bg-black/10"
+                      style={{ color: TEXT_FAINT }}
                       title="Paramètres"
                     >
                       <Settings className="w-3.5 h-3.5" />
@@ -152,9 +162,9 @@ const Sidebar = ({
               </div>
 
               {expanded && (
-                <div className="ml-5 pl-2 border-l mt-0.5 space-y-0.5" style={{ borderColor: "hsl(220, 14%, 18%)" }}>
+                <div className="ml-5 pl-2 border-l mt-0.5 space-y-0.5" style={{ borderColor: BORDER }}>
                   {projectConvs.length === 0 && (
-                    <div className="px-2 py-1.5 text-xs italic" style={{ color: "hsl(220, 10%, 40%)" }}>
+                    <div className="px-2 py-1.5 text-xs italic" style={{ color: TEXT_SUBTLE }}>
                       Aucune conversation
                     </div>
                   )}
@@ -166,10 +176,10 @@ const Sidebar = ({
                       <div
                         key={conv.id}
                         onClick={() => onSelectConversation(conv.id)}
-                        className="flex items-center gap-2 px-2 py-1.5 rounded-lg cursor-pointer text-sm transition-colors"
+                        className="flex items-center gap-2 px-2 py-1.5 rounded-lg cursor-pointer text-sm transition-colors hover:bg-black/5"
                         style={{
-                          color: "hsl(220, 14%, 75%)",
-                          background: active ? "hsl(220, 16%, 14%)" : "transparent",
+                          color: TEXT,
+                          background: active ? SURFACE : "transparent",
                         }}
                       >
                         <div
@@ -188,7 +198,7 @@ const Sidebar = ({
           );
         })}
 
-        <div className="px-2 py-2 mt-2 text-xs font-medium uppercase tracking-wider" style={{ color: "hsl(220, 10%, 40%)" }}>
+        <div className="px-2 py-2 mt-2 text-xs font-medium uppercase tracking-wider" style={{ color: TEXT_MUTED }}>
           Aujourd'hui
         </div>
         {orphanConversations.map((conv) => {
@@ -199,10 +209,10 @@ const Sidebar = ({
             <div
               key={conv.id}
               onClick={() => onSelectConversation(conv.id)}
-              className="flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer text-sm transition-colors mb-0.5"
+              className="flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer text-sm transition-colors mb-0.5 hover:bg-black/5"
               style={{
-                color: "hsl(220, 14%, 75%)",
-                background: active ? "hsl(220, 16%, 14%)" : "transparent",
+                color: TEXT,
+                background: active ? SURFACE : "transparent",
               }}
             >
               <div
@@ -216,7 +226,7 @@ const Sidebar = ({
           );
         })}
         {orphanConversations.length === 0 && (
-          <div className="px-3 py-1.5 text-xs italic" style={{ color: "hsl(220, 10%, 40%)" }}>
+          <div className="px-3 py-1.5 text-xs italic" style={{ color: TEXT_SUBTLE }}>
             Aucune conversation libre
           </div>
         )}
