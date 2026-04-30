@@ -1,6 +1,5 @@
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
-import { Megaphone, FileSearch, ListChecks, Rocket, AlertTriangle, Copy } from "lucide-react";
-import { useState } from "react";
+import { Megaphone, FileSearch, ListChecks, Rocket, AlertTriangle } from "lucide-react";
 
 interface MetaTutorialProps {
   open: boolean;
@@ -19,43 +18,18 @@ const C = {
   textMuted: "hsl(220, 10%, 45%)",
 };
 
-const PromptBlock = ({ text, idx, copiedIdx, onCopy }: {
-  text: string;
-  idx: number;
-  copiedIdx: number | null;
-  onCopy: (t: string, i: number) => void;
-}) => (
-  <button
-    onClick={() => onCopy(text, idx)}
-    className="w-full text-left rounded-lg p-3 transition-colors group mt-2"
+const PromptBlock = ({ text }: { text: string }) => (
+  <div
+    className="w-full text-left rounded-lg p-3 mt-2"
     style={{ background: C.surface, border: `1px solid ${C.border}` }}
-    onMouseEnter={(e) => (e.currentTarget.style.borderColor = META_COLOR)}
-    onMouseLeave={(e) => (e.currentTarget.style.borderColor = C.border)}
   >
-    <div className="flex items-start justify-between gap-2">
-      <p className="text-xs leading-relaxed italic" style={{ color: C.text }}>
-        « {text} »
-      </p>
-      <span
-        className="text-[10px] font-medium shrink-0 flex items-center gap-1 transition-opacity opacity-0 group-hover:opacity-100"
-        style={{ color: META_COLOR }}
-      >
-        <Copy className="w-3 h-3" />
-        {copiedIdx === idx ? "Copié !" : "Copier"}
-      </span>
-    </div>
-  </button>
+    <p className="text-xs leading-relaxed italic" style={{ color: C.text }}>
+      « {text} »
+    </p>
+  </div>
 );
 
-const MetaTutorial = ({ open, onOpenChange, onUsePrompt }: MetaTutorialProps) => {
-  const [copiedIdx, setCopiedIdx] = useState<number | null>(null);
-
-  const handleCopy = (prompt: string, idx: number) => {
-    navigator.clipboard.writeText(prompt);
-    setCopiedIdx(idx);
-    setTimeout(() => setCopiedIdx(null), 1500);
-    onUsePrompt?.(prompt);
-  };
+const MetaTutorial = ({ open, onOpenChange }: MetaTutorialProps) => {
 
   const StepHeader = ({ n, icon: Icon, title }: { n: number; icon: typeof FileSearch; title: string }) => (
     <div className="flex items-center gap-2.5 mb-2">
