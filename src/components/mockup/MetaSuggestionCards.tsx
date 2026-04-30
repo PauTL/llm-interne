@@ -11,7 +11,7 @@ const META_COLOR = "#9900FF";
 const tips = [
   {
     icon: FileSearch,
-    title: "Analyser le plan média d'abord",
+    title: "Commencer par demander une analyse du fichier contenant le plan média",
     desc: "Demandez-lui de lire et comprendre avant toute création",
   },
   {
