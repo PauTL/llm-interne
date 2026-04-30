@@ -1,5 +1,5 @@
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
-import { Megaphone, Target, Sparkles, AlertTriangle, CheckCircle2, Lightbulb, Copy } from "lucide-react";
+import { Megaphone, FileSearch, ListChecks, Rocket, AlertTriangle, Copy } from "lucide-react";
 import { useState } from "react";
 
 interface MetaTutorialProps {
@@ -10,11 +10,42 @@ interface MetaTutorialProps {
 
 const META_COLOR = "#9900FF";
 
-const examplePrompts = [
-  "Crée une campagne META pour promouvoir notre nouvelle collection été, budget 5000€, audience femmes 25-40 ans en France, objectif conversions.",
-  "Génère 3 variations de créatives pour une campagne de retargeting sur les visiteurs du site des 30 derniers jours.",
-  "Analyse les performances de ma dernière campagne et propose 3 optimisations concrètes.",
-];
+const C = {
+  border: "hsl(220, 14%, 88%)",
+  bg: "hsl(0, 0%, 100%)",
+  surface: "hsl(220, 16%, 97%)",
+  textStrong: "hsl(220, 20%, 15%)",
+  text: "hsl(220, 14%, 30%)",
+  textMuted: "hsl(220, 10%, 45%)",
+};
+
+const PromptBlock = ({ text, idx, copiedIdx, onCopy }: {
+  text: string;
+  idx: number;
+  copiedIdx: number | null;
+  onCopy: (t: string, i: number) => void;
+}) => (
+  <button
+    onClick={() => onCopy(text, idx)}
+    className="w-full text-left rounded-lg p-3 transition-colors group mt-2"
+    style={{ background: C.surface, border: `1px solid ${C.border}` }}
+    onMouseEnter={(e) => (e.currentTarget.style.borderColor = META_COLOR)}
+    onMouseLeave={(e) => (e.currentTarget.style.borderColor = C.border)}
+  >
+    <div className="flex items-start justify-between gap-2">
+      <p className="text-xs leading-relaxed italic" style={{ color: C.text }}>
+        « {text} »
+      </p>
+      <span
+        className="text-[10px] font-medium shrink-0 flex items-center gap-1 transition-opacity opacity-0 group-hover:opacity-100"
+        style={{ color: META_COLOR }}
+      >
+        <Copy className="w-3 h-3" />
+        {copiedIdx === idx ? "Copié !" : "Copier"}
+      </span>
+    </div>
+  </button>
+);
 
 const MetaTutorial = ({ open, onOpenChange, onUsePrompt }: MetaTutorialProps) => {
   const [copiedIdx, setCopiedIdx] = useState<number | null>(null);
@@ -26,14 +57,31 @@ const MetaTutorial = ({ open, onOpenChange, onUsePrompt }: MetaTutorialProps) =>
     onUsePrompt?.(prompt);
   };
 
+  const StepHeader = ({ n, icon: Icon, title }: { n: number; icon: typeof FileSearch; title: string }) => (
+    <div className="flex items-center gap-2.5 mb-2">
+      <div
+        className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 text-xs font-semibold"
+        style={{ background: `${META_COLOR}15`, color: META_COLOR, border: `1px solid ${META_COLOR}30` }}
+      >
+        {n}
+      </div>
+      <div className="flex items-center gap-1.5">
+        <Icon className="w-4 h-4" style={{ color: META_COLOR }} />
+        <h3 className="text-sm font-semibold" style={{ color: C.textStrong }}>
+          {title}
+        </h3>
+      </div>
+    </div>
+  );
+
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         side="right"
         className="w-full sm:max-w-md overflow-y-auto border-l p-0"
-        style={{ background: "hsl(0, 0%, 100%)", borderColor: "hsl(220, 14%, 88%)" }}
+        style={{ background: C.bg, borderColor: C.border }}
       >
-        <div className="p-6 border-b" style={{ borderColor: "hsl(220, 14%, 88%)" }}>
+        <div className="p-6 border-b" style={{ borderColor: C.border }}>
           <SheetHeader className="text-left space-y-3">
             <div className="flex items-center gap-3">
               <div
@@ -43,10 +91,10 @@ const MetaTutorial = ({ open, onOpenChange, onUsePrompt }: MetaTutorialProps) =>
                 <Megaphone className="w-5 h-5 text-white" />
               </div>
               <div>
-                <SheetTitle style={{ color: "hsl(220, 20%, 15%)" }}>
+                <SheetTitle style={{ color: C.textStrong }}>
                   Bonnes pratiques · Assistant META
                 </SheetTitle>
-                <SheetDescription style={{ color: "hsl(220, 10%, 45%)" }}>
+                <SheetDescription style={{ color: C.textMuted }}>
                   Tirez le meilleur de l'assistant de création de campagnes
                 </SheetDescription>
               </div>
@@ -55,104 +103,87 @@ const MetaTutorial = ({ open, onOpenChange, onUsePrompt }: MetaTutorialProps) =>
         </div>
 
         <div className="p-6 space-y-6">
-          {/* Section 1 */}
-          <section>
-            <div className="flex items-center gap-2 mb-3">
-              <Target className="w-4 h-4" style={{ color: META_COLOR }} />
-              <h3 className="text-sm font-semibold" style={{ color: "hsl(220, 20%, 18%)" }}>
-                1. Soyez précis sur l'objectif
-              </h3>
-            </div>
-            <p className="text-xs leading-relaxed mb-2" style={{ color: "hsl(220, 14%, 35%)" }}>
-              Indiquez toujours <strong style={{ color: "hsl(220, 20%, 18%)" }}>l'objectif</strong> (notoriété, trafic, conversions), le <strong style={{ color: "hsl(220, 20%, 18%)" }}>budget</strong> et la <strong style={{ color: "hsl(220, 20%, 18%)" }}>durée</strong> de la campagne.
-            </p>
-          </section>
-
-          {/* Section 2 */}
-          <section>
-            <div className="flex items-center gap-2 mb-3">
-              <Sparkles className="w-4 h-4" style={{ color: META_COLOR }} />
-              <h3 className="text-sm font-semibold" style={{ color: "hsl(220, 20%, 18%)" }}>
-                2. Décrivez votre audience
-              </h3>
-            </div>
-            <p className="text-xs leading-relaxed" style={{ color: "hsl(220, 14%, 35%)" }}>
-              Âge, genre, localisation, centres d'intérêt, comportements. Plus le ciblage est clair, meilleures sont les recommandations.
-            </p>
-          </section>
-
-          {/* Section 3 — Do / Don't */}
-          <section>
-            <div className="flex items-center gap-2 mb-3">
-              <Lightbulb className="w-4 h-4" style={{ color: META_COLOR }} />
-              <h3 className="text-sm font-semibold" style={{ color: "hsl(220, 20%, 18%)" }}>
-                3. À faire / à éviter
-              </h3>
-            </div>
-            <div className="space-y-2">
-              <div
-                className="rounded-lg p-3 flex gap-2"
-                style={{ background: "hsl(142, 60%, 96%)", border: "1px solid hsl(142, 50%, 80%)" }}
-              >
-                <CheckCircle2 className="w-4 h-4 mt-0.5 shrink-0" style={{ color: "hsl(142, 71%, 35%)" }} />
-                <p className="text-xs" style={{ color: "hsl(142, 40%, 22%)" }}>
-                  "Campagne conversions, 3000€/mois, audience 30-45 ans urbains, intéressés par la déco design."
-                </p>
-              </div>
-              <div
-                className="rounded-lg p-3 flex gap-2"
-                style={{ background: "hsl(0, 70%, 97%)", border: "1px solid hsl(0, 60%, 85%)" }}
-              >
-                <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0" style={{ color: "hsl(0, 75%, 45%)" }} />
-                <p className="text-xs" style={{ color: "hsl(0, 50%, 30%)" }}>
-                  "Fais-moi une pub pour mon site." → trop vague, l'assistant manque de contexte.
-                </p>
-              </div>
-            </div>
-          </section>
-
-          {/* Section 4 — Example prompts */}
-          <section>
-            <div className="flex items-center gap-2 mb-3">
-              <Megaphone className="w-4 h-4" style={{ color: META_COLOR }} />
-              <h3 className="text-sm font-semibold" style={{ color: "hsl(220, 20%, 18%)" }}>
-                4. Exemples de prompts
-              </h3>
-            </div>
-            <div className="space-y-2">
-              {examplePrompts.map((p, i) => (
-                <button
-                  key={i}
-                  onClick={() => handleCopy(p, i)}
-                  className="w-full text-left rounded-lg p-3 transition-colors group"
-                  style={{ background: "hsl(220, 16%, 97%)", border: "1px solid hsl(220, 14%, 88%)" }}
-                  onMouseEnter={(e) => (e.currentTarget.style.borderColor = META_COLOR)}
-                  onMouseLeave={(e) => (e.currentTarget.style.borderColor = "hsl(220, 14%, 88%)")}
-                >
-                  <div className="flex items-start justify-between gap-2">
-                    <p className="text-xs leading-relaxed" style={{ color: "hsl(220, 14%, 30%)" }}>
-                      {p}
-                    </p>
-                    <span
-                      className="text-[10px] font-medium shrink-0 flex items-center gap-1 transition-opacity opacity-0 group-hover:opacity-100"
-                      style={{ color: META_COLOR }}
-                    >
-                      <Copy className="w-3 h-3" />
-                      {copiedIdx === i ? "Copié !" : "Copier"}
-                    </span>
-                  </div>
-                </button>
-              ))}
-            </div>
-          </section>
-
+          {/* Intro */}
           <div
-            className="rounded-lg p-3 text-xs"
-            style={{ background: `${META_COLOR}10`, border: `1px solid ${META_COLOR}40`, color: "hsl(220, 20%, 25%)" }}
+            className="rounded-lg p-3 text-xs leading-relaxed"
+            style={{ background: `${META_COLOR}10`, border: `1px solid ${META_COLOR}40`, color: C.text }}
           >
-            💡 Astuce : vous pouvez rouvrir ce guide à tout moment via le bouton{" "}
-            <strong>Bonnes pratiques</strong> en haut de la conversation.
+            Pour obtenir une campagne fiable, ne demandez pas de <strong>tout créer, tout de suite</strong>.
+            Demandez d'abord à l'outil de <strong>comprendre votre plan média</strong>.
+            Voici 3 étapes conseillées :
           </div>
+
+          {/* Step 1 */}
+          <section>
+            <StepHeader n={1} icon={FileSearch} title="Commencer par l'analyse du plan média" />
+            <PromptBlock
+              text="Récupère toutes les informations utiles de mon plan média. Lis tous les onglets du fichier et identifie tout ce qui est nécessaire à la création de la campagne."
+              idx={0}
+              copiedIdx={copiedIdx}
+              onCopy={handleCopy}
+            />
+            <p className="text-xs mt-3 mb-1.5" style={{ color: C.text }}>
+              Puis ajoutez le contexte que vous connaissez déjà :
+            </p>
+            <ul className="text-xs space-y-1 pl-4 list-disc" style={{ color: C.text }}>
+              <li>compte publicitaire</li>
+              <li>page Facebook</li>
+              <li>logique budgétaire (budget campagne ou budget adset)</li>
+              <li>contraintes spécifiques éventuelles (ex : « Désactive systématiquement Advantage+ »)</li>
+            </ul>
+            <p className="text-xs mt-3" style={{ color: C.textMuted }}>
+              <strong style={{ color: C.textStrong }}>Objectif :</strong> faire comprendre à l'outil quoi analyser et dans quel cadre travailler.
+            </p>
+            <div
+              className="rounded-lg p-3 flex gap-2 mt-3"
+              style={{ background: "hsl(0, 70%, 97%)", border: "1px solid hsl(0, 60%, 85%)" }}
+            >
+              <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0" style={{ color: "hsl(0, 75%, 45%)" }} />
+              <div className="text-xs" style={{ color: "hsl(0, 50%, 30%)" }}>
+                <strong>À éviter :</strong> « Voici un Excel, crée la campagne »
+              </div>
+            </div>
+          </section>
+
+          {/* Step 2 */}
+          <section>
+            <StepHeader n={2} icon={ListChecks} title="Demander un récapitulatif avant toute création" />
+            <PromptBlock
+              text="Fais un récapitulatif complet de ce que tu as compris pour créer la campagne, liste les points ambigus et attends ma validation avant toute création."
+              idx={1}
+              copiedIdx={copiedIdx}
+              onCopy={handleCopy}
+            />
+            <p className="text-xs mt-3 mb-1.5" style={{ color: C.text }}>
+              Le récap doit faire apparaître :
+            </p>
+            <ul className="text-xs space-y-1 pl-4 list-disc" style={{ color: C.text }}>
+              <li>objectif de campagne</li>
+              <li>dates</li>
+              <li>budget</li>
+              <li>ciblage</li>
+              <li>placements</li>
+              <li>structure (nombre d'adsets / ads)</li>
+              <li>informations manquantes ou ambiguës</li>
+            </ul>
+            <p className="text-xs mt-3" style={{ color: C.textMuted }}>
+              C'est le moment d'ajuster si besoin.
+            </p>
+          </section>
+
+          {/* Step 3 */}
+          <section>
+            <StepHeader n={3} icon={Rocket} title="Valider puis lancer la création" />
+            <PromptBlock
+              text="Validation OK, tu peux créer la campagne."
+              idx={2}
+              copiedIdx={copiedIdx}
+              onCopy={handleCopy}
+            />
+            <p className="text-xs mt-3" style={{ color: C.textMuted }}>
+              L'outil crée alors une campagne beaucoup plus fiable, avec moins de corrections derrière.
+            </p>
+          </section>
         </div>
       </SheetContent>
     </Sheet>
