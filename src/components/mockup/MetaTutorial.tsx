@@ -92,9 +92,6 @@ const MetaTutorial = ({ open, onOpenChange }: MetaTutorialProps) => {
             <StepHeader n={1} icon={FileSearch} title="Commencer par l'analyse du plan média" />
             <PromptBlock
               text="Récupère toutes les informations utiles de mon plan média. Lis tous les onglets du fichier et identifie tout ce qui est nécessaire à la création de la campagne."
-              idx={0}
-              copiedIdx={copiedIdx}
-              onCopy={handleCopy}
             />
             <p className="text-xs mt-3 mb-1.5" style={{ color: C.text }}>
               Puis ajoutez le contexte que vous connaissez déjà :
@@ -124,9 +121,6 @@ const MetaTutorial = ({ open, onOpenChange }: MetaTutorialProps) => {
             <StepHeader n={2} icon={ListChecks} title="Demander un récapitulatif avant toute création" />
             <PromptBlock
               text="Fais un récapitulatif complet de ce que tu as compris pour créer la campagne, liste les points ambigus et attends ma validation avant toute création."
-              idx={1}
-              copiedIdx={copiedIdx}
-              onCopy={handleCopy}
             />
             <p className="text-xs mt-3 mb-1.5" style={{ color: C.text }}>
               Le récap doit faire apparaître :
@@ -150,9 +144,6 @@ const MetaTutorial = ({ open, onOpenChange }: MetaTutorialProps) => {
             <StepHeader n={3} icon={Rocket} title="Valider puis lancer la création" />
             <PromptBlock
               text="Validation OK, tu peux créer la campagne."
-              idx={2}
-              copiedIdx={copiedIdx}
-              onCopy={handleCopy}
             />
             <p className="text-xs mt-3" style={{ color: C.textMuted }}>
               L'outil crée alors une campagne beaucoup plus fiable, avec moins de corrections derrière.
