@@ -104,7 +104,7 @@ const MetaSuggestionCards = ({ onUsePrompt, onOpenFullGuide }: MetaSuggestionCar
 export const MetaHelpButton = ({ onClick }: { onClick: () => void }) => (
   <button
     onClick={onClick}
-    className="w-7 h-7 rounded-full flex items-center justify-center transition-all"
+    className="h-7 pl-2.5 pr-1.5 rounded-full inline-flex items-center gap-1.5 text-xs font-medium transition-all hover:opacity-80"
     style={{
       background: `${META_COLOR}15`,
       color: META_COLOR,
@@ -112,7 +112,13 @@ export const MetaHelpButton = ({ onClick }: { onClick: () => void }) => (
     }}
     title="Aide & bonnes pratiques"
   >
-    <HelpCircle className="w-3.5 h-3.5" />
+    Bonnes pratiques
+    <span
+      className="w-5 h-5 rounded-full flex items-center justify-center"
+      style={{ background: `${META_COLOR}25` }}
+    >
+      <HelpCircle className="w-3 h-3" />
+    </span>
   </button>
 );
 
